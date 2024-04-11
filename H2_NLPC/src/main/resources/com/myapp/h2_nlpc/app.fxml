@@ -166,12 +166,12 @@
                 </StackPane>
                 <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <ChoiceBox fx:id="cbHistogramSource" disable="true" prefWidth="110.0" StackPane.alignment="CENTER_RIGHT">
+                        <ChoiceBox fx:id="cbHistogramSource" disable="true" prefWidth="200.0" StackPane.alignment="CENTER">
                             <StackPane.margin>
                                 <Insets left="20.0" right="35.0" top="20.0" />
                             </StackPane.margin>
                         </ChoiceBox>
-                        <Label prefHeight="18.0" text="Source for histogram" StackPane.alignment="CENTER_RIGHT">
+                        <Label prefHeight="18.0" text="Source for histogram" StackPane.alignment="CENTER">
                             <StackPane.margin>
                                 <Insets bottom="30.0" left="20.0" right="20.0" />
                             </StackPane.margin>
@@ -180,31 +180,26 @@
                 </StackPane>
                 <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="50.0">
                     <children>
-                        <Label text="Scale" StackPane.alignment="CENTER_LEFT">
+                        <Label text="Scale" StackPane.alignment="CENTER">
                             <StackPane.margin>
                                 <Insets bottom="30.0" left="20.0" />
                             </StackPane.margin>
                         </Label>
-                        <TextField maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="50.0" StackPane.alignment="CENTER_LEFT">
+                        <TextField fx:id="tfRescaling" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="50.0" text="1" StackPane.alignment="CENTER">
                             <StackPane.margin>
                                 <Insets left="20.0" top="20.0" />
                             </StackPane.margin>
                         </TextField>
-                        <Button mnemonicParsing="false" text="Button" StackPane.alignment="CENTER_RIGHT">
-                            <StackPane.margin>
-                                <Insets right="40.0" top="20.0" />
-                            </StackPane.margin>
-                        </Button>
                     </children>
                 </StackPane>
             </children>
         </VBox>
       <StackPane minWidth="-Infinity" prefWidth="580.0" style="-fx-border-color: black;">
          <children>
-            <Canvas fx:id="cHistogram" height="450.0" width="560.0" StackPane.alignment="CENTER" />
+            <Canvas fx:id="cHistogram" height="480.0" width="570.0" StackPane.alignment="CENTER" />
             <Label fx:id="lblHistogramTitle" StackPane.alignment="CENTER">
                <StackPane.margin>
-                  <Insets bottom="500.0" />
+                  <Insets bottom="530.0" />
                </StackPane.margin>
             </Label>
          </children>

@@ -1,6 +1,5 @@
 package com.myapp.h2_nlpc.Controller;
 
-import com.myapp.h2_nlpc.BackendApp;
 import com.myapp.h2_nlpc.CoderAndDecoder.CoderAndDecoderTools;
 import com.myapp.h2_nlpc.testcases.CoderTestCase;
 import com.myapp.h2_nlpc.testcases.DecoderTestCase;
@@ -49,9 +48,6 @@ public class AppController implements Initializable {
     @FXML
     private Button btnComputeError;
 
-//    @FXML
-//    private Button btnLoadQuantizedError;
-
     @FXML
     private Button btnDecode;
 
@@ -91,6 +87,9 @@ public class AppController implements Initializable {
     @FXML
     private TextField tfContrast;
 
+    @FXML
+    private TextField tfRescaling;
+
     //Labels
     @FXML
     private Label lblHistogramTitle;
@@ -106,7 +105,6 @@ public class AppController implements Initializable {
 
 
     //Parameters
-    private BackendApp app;
 
     /**
      * coder test cases
@@ -118,7 +116,6 @@ public class AppController implements Initializable {
      */
     private DecoderTestCase decoderTestCase;
 
-    //TODO pixel cu pixel pus la image view desenare
 
     /**
      * Used for preset some components
@@ -128,9 +125,8 @@ public class AppController implements Initializable {
 
         this.coderTestCase = new CoderTestCase();
         this.decoderTestCase = new DecoderTestCase();
-        this.cbHistogramSource.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.refreshHistogram();
-        });
+        this.cbHistogramSource.valueProperty().addListener((observable, oldValue, newValue) -> this.refreshHistogram());
+        tfRescaling.setOnAction(event -> this.refreshHistogram());
 
 
     }
@@ -142,44 +138,61 @@ public class AppController implements Initializable {
      */
     private void refreshHistogram() {
         String histogramSource = this.cbHistogramSource.getValue();
+        if (histogramSource == null) {
+            String title = "No Data";
+            String message = "There is no data loaded";
+            this.showDialog(title, message);
 
-        boolean coderOptions = false;
-        for (int i = 0; i < CoderAndDecoderTools.CODER_OPTIONS.length; i++) {
-            if (CoderAndDecoderTools.CODER_OPTIONS[i].equals(histogramSource)) {
-                coderOptions = true;
-                break;
+        } else {
+            double scale;
+            String scaleAsString = this.tfRescaling.getText();
+            if (!scaleAsString.equals("")) {
+                scale = Double.parseDouble(scaleAsString);
+                boolean coderOptions = false;
+                for (int i = 0; i < CoderAndDecoderTools.CODER_OPTIONS.length; i++) {
+                    if (CoderAndDecoderTools.CODER_OPTIONS[i].equals(histogramSource)) {
+                        coderOptions = true;
+                        break;
+                    }
+                }
+
+                String imageName, predictorType;
+                int k;
+                int[] histogramData;
+
+                if (coderOptions) {
+                    histogramData = this.coderTestCase.getHistogram(histogramSource);
+                    imageName = this.coderTestCase.getFileName();
+                    predictorType = this.coderTestCase.getPredictorType();
+                    k = this.coderTestCase.getK();
+                } else {
+                    histogramData = this.decoderTestCase.getHistogram(histogramSource);
+                    imageName = this.decoderTestCase.getFileName();
+                    predictorType = this.decoderTestCase.getPredictorType();
+                    k = this.decoderTestCase.getK();
+                }
+
+
+                String title;
+                if (histogramSource.equals("Original image"))
+                    title = "Histogram of " + imageName;
+                else {
+                    title = "Histogram of " + histogramSource + " using " + predictorType + " predictor with k="
+                            + k + ".\n The current image being used is " + imageName;
+                }
+                this.lblHistogramTitle.setText(title);
+
+
+                this.drawHistogram(histogramData, scale);
+
+            } else {
+                String title = "Wrong scale parameter";
+                String message = "The scale parameter is null!";
+                this.showDialog(title, message);
             }
         }
 
-        String imageName = "";
-        String predictorType = "";
-        int k = -1;
-        int[] histogramData;
 
-        if (coderOptions) {
-            histogramData = this.coderTestCase.getHistogram(histogramSource);
-            imageName = this.coderTestCase.getFileName();
-            predictorType = this.coderTestCase.getPredictorType();
-            k = this.coderTestCase.getK();
-        } else {
-            histogramData = this.decoderTestCase.getHistogram(histogramSource);
-            imageName = this.decoderTestCase.getFileName();
-            predictorType = this.decoderTestCase.getPredictorType();
-            k = this.decoderTestCase.getK();
-        }
-
-
-        String title = "";
-        if (histogramSource.equals("Original image"))
-            title = "Histogram of " + imageName;
-        else {
-            title = "Histogram of " + histogramSource + " using " + predictorType + " predictor with k="
-                    + k + ".\n The current image being used is " + imageName;
-        }
-        this.lblHistogramTitle.setText(title);
-
-
-        this.drawHistogram(histogramData);
     }
 
     /**
@@ -187,7 +200,7 @@ public class AppController implements Initializable {
      *
      * @param histogramData an frequencies array of image pixels
      */
-    private void drawHistogram(int[] histogramData) {
+    private void drawHistogram(int[] histogramData, double scale) {
 
         double height = cHistogram.getHeight();//450
         double width = cHistogram.getWidth();//530
@@ -198,33 +211,31 @@ public class AppController implements Initializable {
 
         double barWidth = 1;
         double gap = 0;
-        double startX = 30;
-        double startY = height - 30;
+        double startX = 40;
+        double startY = height - 40;
 
-        int maxCount = 0;
-        for (int count : histogramData) {
-            if (count > maxCount) {
-                maxCount = count;
-            }
-        }
+        double maxCount = 1000 * scale;
+//
 
         histogram.setFill(Color.BLACK);
         histogram.setStroke(Color.BLACK);
+        histogram.setTextBaseline(VPos.CENTER);
+        histogram.setTextAlign(TextAlignment.LEFT);
         histogram.setLineWidth(1);
 
         //Label Y
-        histogram.strokeLine(30, startY, 30, 0);
+        histogram.strokeLine(40, startY, 40, 0);
         for (int i = 0; i <= maxCount; i += maxCount / 20) {
             double y = startY - ((double) i / maxCount * (startY));
-            histogram.strokeLine(23, y, 29, y);
-            histogram.fillText(String.valueOf(i), 0, y + 5);
+            histogram.strokeLine(33, y, 39, y);
+            histogram.fillText(String.valueOf(i), 5, y + 5);
         }
 
 
         //Label X
         histogram.setTextAlign(TextAlignment.CENTER);
         histogram.setTextBaseline(VPos.TOP);
-        histogram.strokeLine(30, startY, width, startY);
+        histogram.strokeLine(40, startY, width, startY);
         int[] labelX = new int[]{-255, -200, -100, 0, 100, 200, 255};
         for (int value : labelX) {
             double x = startX + (255 + value) * (barWidth + gap);
@@ -236,12 +247,12 @@ public class AppController implements Initializable {
         histogram.setFill(Color.BLUE);
         for (int count : histogramData) {
             if (count != 0) {
-                double barHeight = (double) count / maxCount * (height - 10);
+                double barHeight = (double) count / maxCount / scale * (height - 10);
                 histogram.fillRect(startX, startY - barHeight - 1, barWidth, barHeight);
             }
             startX += barWidth + gap;
         }
-        System.out.println("done");
+//        System.out.println("done");
 
     }
 
@@ -257,7 +268,7 @@ public class AppController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an bmp image");
 
-        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\lab_NL_PRED");
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H2_NLPC\\lab_NL_PRED");
         fileChooser.setInitialDirectory(defaultDirectory);
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Imagini BMP (*.bmp)", "*.bmp");
@@ -277,13 +288,12 @@ public class AppController implements Initializable {
     /***
      * Start de encoder
      *
-     * @throws IOException an exception
      */
     @FXML
-    protected void onBtnEncodeClick() throws IOException {
+    protected void onBtnEncodeClick() {
         String kString = this.tfK.getText();
         if (!kString.equals("")) {
-            int k = Integer.valueOf(kString);
+            int k = Integer.parseInt(kString);
             if (k >= 0 && k <= 10) {
                 String predictorType = this.cbPredictionSelection.getValue();
                 this.coderTestCase.startEncoding(predictorType, k);
@@ -336,7 +346,7 @@ public class AppController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an bmp image");
 
-        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homework\\H2_NLPC\\nlcFile");
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H2_NLPC\\nlcFile");
         fileChooser.setInitialDirectory(defaultDirectory);
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("NLC Files (*.nlc)", "*.nlc");
@@ -359,9 +369,6 @@ public class AppController implements Initializable {
     protected void onBtnDecodeClick() throws IOException {
         WritableImage writableImage = this.decoderTestCase.startDecoding();
         this.iwDecodedImage.setImage(writableImage);
-//        File file = this.decoderTestCase.startDecoding();
-//        Image image = new Image(file.toURI().toString());
-//        this.iwDecodedImage.setImage(image);
 
         this.changeInterfaceAfterDecodeEvent();
 
@@ -371,8 +378,6 @@ public class AppController implements Initializable {
     /**
      * the btnSaveDecodedImage Event
      * open a dialog to choose the directory for saving decoded image
-     *
-     * @throws IOException
      */
     @FXML
     protected void onBtnSaveDecodedImage() throws IOException {
@@ -380,7 +385,7 @@ public class AppController implements Initializable {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select an Directory");
 
-        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homework\\H2_NLPC");
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H2_NLPC\\decodedImages");
         directoryChooser.setInitialDirectory(defaultDirectory);
 
         Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
@@ -403,14 +408,11 @@ public class AppController implements Initializable {
     protected void onBtnRefreshClick() throws IOException {
         String contrastString = this.tfContrast.getText();
         if (!contrastString.equals("")) {
-            double contrast = Double.valueOf(contrastString);
+            double contrast = Double.parseDouble(contrastString);
             String imageType = this.cbError.getValue();
             WritableImage writableImage = this.coderTestCase.createErrorImage(imageType, contrast);
             this.iwErrorImage.setImage(writableImage);
-//
-//            File file=this.coderTestCase.createErrorImage(imageType,contrast);
-//            Image image = new Image(file.toURI().toString());
-//            this.iwErrorImage.setImage(image);
+
 
         } else {
             String title = "Wrong contrast parameter";
@@ -473,17 +475,11 @@ public class AppController implements Initializable {
             this.cbHistogramSource.setValue("Original image");
         } else {
             this.cbHistogramSource.setValue("Original image");
-            if (cbHistogramSource.getItems().contains("Predictor error image from coder")) {
-                cbHistogramSource.getItems().remove("Predictor error image from coder");
-            }
+            cbHistogramSource.getItems().remove("Predictor error image from coder");
 
-            if (cbHistogramSource.getItems().contains("Q predictor error image from coder")) {
-                cbHistogramSource.getItems().remove("Q predictor error image from coder");
-            }
+            cbHistogramSource.getItems().remove("Q predictor error image from coder");
 
-            if (cbHistogramSource.getItems().contains("Decoded image from coder")) {
-                cbHistogramSource.getItems().remove("Decoded image from coder");
-            }
+            cbHistogramSource.getItems().remove("Decoded image from coder");
 
         }
 
@@ -530,19 +526,11 @@ public class AppController implements Initializable {
         this.btnDecode.setDisable(false);
         this.btnSaveDecodedImage.setDisable(true);
 
-        if (cbHistogramSource.getItems().contains("Q predictor error image from decoder")) {
-            cbHistogramSource.getItems().remove("Q predictor error image from decoder");
-        }
-        if (cbHistogramSource.getItems().contains("DQ predictor error image from decoder")) {
-            cbHistogramSource.getItems().remove("DQ predictor error image from decoder");
-        }
+        cbHistogramSource.getItems().remove("Q predictor error image from decoder");
+        cbHistogramSource.getItems().remove("DQ predictor error image from decoder");
 
-        if (cbHistogramSource.getItems().contains("Decoded image from decoder")) {
-            cbHistogramSource.getItems().remove("Decoded image from decoder");
-        }
-        if (cbHistogramSource.getItems().contains("Image prediction from from decoder")) {
-            cbHistogramSource.getItems().remove("Image prediction from from decoder");
-        }
+        cbHistogramSource.getItems().remove("Decoded image from decoder");
+        cbHistogramSource.getItems().remove("Image prediction from from decoder");
 
 
         ObservableList<String> items = this.cbHistogramSource.getItems();
