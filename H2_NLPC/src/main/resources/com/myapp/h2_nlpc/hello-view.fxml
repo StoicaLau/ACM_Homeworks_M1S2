@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="658.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.myapp.h2_nlpc.Controller.AppController">
+    <children>
+        <VBox minWidth="-Infinity" prefHeight="400.0" prefWidth="300.0" style="-fx-border-color: black;" HBox.hgrow="ALWAYS">
+            <children>
+                <StackPane minHeight="370.0" prefHeight="370.0" prefWidth="350.0">
+                    <children>
+                        <ImageView fx:id="iwOriginalImage" fitHeight="256.0" fitWidth="256.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER">
+                            <viewport>
+                                <Rectangle2D />
+                            </viewport>
+                            <StackPane.margin>
+                                <Insets top="40.0" />
+                            </StackPane.margin>
+                        </ImageView>
+                        <Button fx:id="btnLoadOriginalImage" mnemonicParsing="false" onAction="#onBtnLoadOriginalImageClick" prefWidth="55.0" text="Load" StackPane.alignment="BOTTOM_CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="100.0" minHeight="100.0" minWidth="-Infinity" prefHeight="100.0" prefWidth="0.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Label text="Predictor Selection" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets bottom="30.0" left="20.0" />
+                            </StackPane.margin>
+                        </Label>
+                        <Label text="k" StackPane.alignment="CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="30.0" left="50.0" />
+                            </StackPane.margin>
+                        </Label>
+                        <TextField fx:id="tfK" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="20.0" prefHeight="26.0" prefWidth="50.0" text="0" StackPane.alignment="CENTER">
+                            <StackPane.margin>
+                                <Insets left="50.0" top="20.0" />
+                            </StackPane.margin>
+                        </TextField>
+                        <Button fx:id="btnEncode" disable="true" mnemonicParsing="false" onAction="#onBtnEncodeClick" text="Encode" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                        <ChoiceBox fx:id="cbPredictionSelection" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="110.0" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </ChoiceBox>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <ChoiceBox fx:id="cbSaveMode" disable="true" prefWidth="110.0" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </ChoiceBox>
+                        <Label text="Save mode" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets bottom="30.0" left="20.0" />
+                            </StackPane.margin>
+                        </Label>
+                        <Button fx:id="btnSaveQuantizedError" disable="true" mnemonicParsing="false" onAction="#onBtnSaveQuantizedErrorClick" prefHeight="25.0" prefWidth="55.0" text="Save" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
+        <VBox minWidth="-Infinity" prefHeight="748.0" prefWidth="300.0" style="-fx-border-color: black;" HBox.hgrow="ALWAYS">
+            <children>
+                <StackPane minHeight="-Infinity" prefHeight="370.0" prefWidth="400.0">
+                    <children>
+                        <TextField fx:id="tfContrast" disable="true" maxWidth="-Infinity" prefWidth="50.0" text="0" StackPane.alignment="BOTTOM_CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="20.0" />
+                            </StackPane.margin>
+                        </TextField>
+                  <ImageView fx:id="iwErrorImage" fitHeight="256.0" fitWidth="256.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER">
+                     <StackPane.margin>
+                        <Insets top="40.0" />
+                     </StackPane.margin>
+                  </ImageView>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="btnRefresh" disable="true" mnemonicParsing="false" onAction="#onBtnRefreshClick" text="Refresh" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="40.0" top="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                        <ChoiceBox fx:id="cbError" disable="true" prefWidth="110.0" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </ChoiceBox>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="btnComputeError" disable="true" mnemonicParsing="false" onAction="#onBtnComputeErrorClick" text="Compute error" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="40.0" />
+                            </StackPane.margin>
+                        </Button>
+                        <Label fx:id="lblMinError" text="Min=" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets bottom="40.0" left="20.0" />
+                            </StackPane.margin>
+                        </Label>
+                        <Label fx:id="lblMaxError" text="Max=" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="20.0" top="40.0" />
+                            </StackPane.margin>
+                        </Label>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
+        <VBox minHeight="-Infinity" prefWidth="350.0" style="-fx-border-color: black;" HBox.hgrow="ALWAYS">
+            <children>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="370.0" prefWidth="200.0">
+                    <children>
+                        <ImageView fx:id="iwDecodedImage" fitHeight="256.0" fitWidth="256.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER">
+                            <StackPane.margin>
+                                <Insets top="40.0" />
+                            </StackPane.margin>
+                        </ImageView>
+                        <Button fx:id="btnLoadQuantizedError" mnemonicParsing="false" onAction="#onBtnLoadQuantizedErrorClick" prefHeight="25.0" prefWidth="60.0" text="Load" StackPane.alignment="BOTTOM_CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0">
+                    <children>
+                        <Button fx:id="btnDecode" disable="true" mnemonicParsing="false" onAction="#onBtnDecodeClick" prefHeight="25.0" prefWidth="60.0" text="Decode" StackPane.alignment="CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="60.0" />
+                            </StackPane.margin>
+                        </Button>
+                        <Button fx:id="btnSaveDecodedImage" disable="true" mnemonicParsing="false" onAction="#onBtnSaveDecodedImage" prefHeight="25.0" prefWidth="65.0" text="Save" StackPane.alignment="CENTER">
+                            <StackPane.margin>
+                                <Insets top="40.0" />
+                            </StackPane.margin>
+                        </Button>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <ChoiceBox fx:id="cbHistogramSource" disable="true" prefWidth="110.0" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets left="20.0" right="35.0" top="20.0" />
+                            </StackPane.margin>
+                        </ChoiceBox>
+                        <Label prefHeight="18.0" text="Source for histogram" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets bottom="30.0" left="20.0" right="20.0" />
+                            </StackPane.margin>
+                        </Label>
+                    </children>
+                </StackPane>
+                <StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="50.0">
+                    <children>
+                        <Label text="Scale" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets bottom="30.0" left="20.0" />
+                            </StackPane.margin>
+                        </Label>
+                        <TextField maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="50.0" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="20.0" top="20.0" />
+                            </StackPane.margin>
+                        </TextField>
+                        <Button mnemonicParsing="false" text="Button" StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="40.0" top="20.0" />
+                            </StackPane.margin>
+                        </Button>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
+      <StackPane minWidth="-Infinity" prefWidth="580.0" style="-fx-border-color: black;">
+         <children>
+            <Canvas fx:id="cHistogram" height="450.0" width="560.0" StackPane.alignment="CENTER" />
+            <Label fx:id="lblHistogramTitle" StackPane.alignment="CENTER">
+               <StackPane.margin>
+                  <Insets bottom="500.0" />
+               </StackPane.margin>
+            </Label>
+         </children>
+      </StackPane>
+    </children>
+</HBox>
