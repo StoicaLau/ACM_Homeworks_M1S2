@@ -50,7 +50,7 @@ public class ArithmeticEncoding {
     public static void bitsPlusFollow(int bit) throws IOException {
         BitOutput.outputBit(bit);
         while (bitsToFollow > 0) {
-            BitOutput.outputBit(bit);
+            BitOutput.outputBit(bit^1);
             bitsToFollow -= 1;
         }
     }

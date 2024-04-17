@@ -214,7 +214,7 @@ public class AppController implements Initializable {
         double startX = 40;
         double startY = height - 40;
 
-        double maxCount = 1000 * scale;
+        double maxCount = 1000 ;
 //
 
         histogram.setFill(Color.BLACK);
@@ -247,7 +247,7 @@ public class AppController implements Initializable {
         histogram.setFill(Color.BLUE);
         for (int count : histogramData) {
             if (count != 0) {
-                double barHeight = (double) count / maxCount / scale * (height - 10);
+                double barHeight = (double) count / maxCount * scale * (height - 10);
                 histogram.fillRect(startX, startY - barHeight - 1, barWidth, barHeight);
             }
             startX += barWidth + gap;

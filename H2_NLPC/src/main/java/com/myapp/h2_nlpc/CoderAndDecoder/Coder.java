@@ -170,13 +170,6 @@ public class Coder {
                                 }
                                 break;
                         }
-//                        this.predictedValues[i][j] = CoderAndDecoderTools.normalizeValue(this.predictedValues[i][j]);
-//                        this.errorValues[i][j] = this.imageValues[i][j] - this.predictedValues[i][j];
-//                        this.quantizedErrorValues[i][j] = CoderAndDecoderTools.quantizeError(this.errorValues[i][j], k);
-//                        this.dequantizedErrorValues[i][j] = CoderAndDecoderTools.dequantizeError(this.quantizedErrorValues[i][j], k);
-//                        this.decodedValues[i][j] = this.predictedValues[i][j] + this.dequantizedErrorValues[i][j];
-//                        this.decodedValues[i][j] = CoderAndDecoderTools.normalizeValue(decodedValues[i][j]);
-
                     }
                     this.predictedValues[i][j] = CoderAndDecoderTools.normalizeValue(this.predictedValues[i][j]);
                     this.errorValues[i][j] = this.imageValues[i][j] - this.predictedValues[i][j];

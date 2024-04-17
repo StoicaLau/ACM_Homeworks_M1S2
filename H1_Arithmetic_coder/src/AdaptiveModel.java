@@ -1,3 +1,4 @@
+//TODO custom EOF 27
 public class AdaptiveModel {
 
     /**
@@ -9,7 +10,7 @@ public class AdaptiveModel {
     private static final int NO_OF_SYMBOLS = NO_OF_CHARS + 1;
 
     /**
-     * Translation tables between characters and symbol indexes
+     * Translation tables between characters and symbol indexes ,nu mai e nevoie ,orice simbol e si index
      */
     public static int[] charToIndex=new int[NO_OF_SYMBOLS];
     public static char[] indexToChar=new char[NO_OF_SYMBOLS+1];
