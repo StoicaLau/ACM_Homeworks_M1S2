@@ -5,11 +5,11 @@ public class MainDecoding {
         AdaptiveModel adaptiveModel=new AdaptiveModel();
         adaptiveModel.startModel();
         BitInput.startInputtingBits();
-        ArithmeticDecoding.startDecoding();
+        ArithmeticDecoding arithmeticDecoding=new ArithmeticDecoding();
         while (true) {
             int symbol;
 
-            symbol = ArithmeticDecoding.decodeSymbol(AdaptiveModel.cumFreq);
+            symbol = arithmeticDecoding.decodeSymbol(AdaptiveModel.cumFreq);
             if (symbol == AdaptiveModel.EOF_SYMBOL)
                 break;
             int ch = AdaptiveModel.indexToChar[symbol];

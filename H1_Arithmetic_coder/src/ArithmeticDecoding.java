@@ -7,25 +7,32 @@ public class ArithmeticDecoding {
     /**
      * it is the start_decoding method
      */
-    public static void startDecoding() throws IOException {
+    public ArithmeticDecoding() throws IOException {
         value = 0;
         for (int i = 1; i <= ArithmeticParameters.CODE_VALUE_BITS; i++) {
-            value = 2 * value + BitInput.inputBit();//poate este read bit ,nu stiu inca
+            value = 2 * value + BitInput.inputBit();
         }
         low = 0;
         high = ArithmeticParameters.TOP_VALUE;
     }
 
-    public static int decodeSymbol(int[] cumFreq) throws IOException {
+    /**
+     * decode bit by bit
+     *
+     * @param cumFreq cumulative frequent
+     * @return the decoded symbol
+     * @throws IOException
+     */
+    public int decodeSymbol(int[] cumFreq) throws IOException {
 
         long range = high - low + 1;
         int cum = (int) ((((value - low) + 1) * cumFreq[0] - 1) / range);
         int symbol;
         for (symbol = 1; cumFreq[symbol] > cum; symbol++) ;
-        high = low +((range * cumFreq[symbol - 1]) / cumFreq[0] - 1);
+        high = low + ((range * cumFreq[symbol - 1]) / cumFreq[0] - 1);
         low = low + (range * cumFreq[symbol]) / (cumFreq[0]);
 
-        while (true){
+        while (true) {
             if (high < ArithmeticParameters.HALF) {
                 //nothing
             } else if (low >= ArithmeticParameters.HALF) {

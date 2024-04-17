@@ -4,37 +4,34 @@ import java.io.IOException;
 public class MainEncoding {
     public static void main(String[] args) throws IOException, IOException {
 
-        AdaptiveModel adaptiveModel=new AdaptiveModel();
+        AdaptiveModel adaptiveModel = new AdaptiveModel();
 
-        adaptiveModel.startModel(); //start module
+        adaptiveModel.startModel();
 
-        BitOutput.startOutputtingBits();   //start bit reader
+        BitOutput.startOutputtingBits();
 
-        ArithmeticEncoding.startEncoding();           //start encoding
-        File file=new File("test.bin");
-        BitReader bitReader=new BitReader(file);
+        ArithmeticEncoding arithmeticEncoding = new ArithmeticEncoding();
+        File file = new File("test.bin");
+        BitReader bitReader = new BitReader(file);
 
         while (true) {
 
             int ch = bitReader.readNBits(8);
 
-            if (ch ==-1)
+            if (ch == -1)
                 break;
 
-            int symbol = adaptiveModel.charToIndex[ch]; // translate from char index to symbol
-            ArithmeticEncoding.encodeSymbol(symbol, AdaptiveModel.cumFreq); // Codifică acel simbol
-            adaptiveModel.updateModel(symbol);      // Actualizează modelul
+            int symbol = adaptiveModel.charToIndex[ch];
+            arithmeticEncoding.encodeSymbol(symbol, AdaptiveModel.cumFreq);
+            adaptiveModel.updateModel(symbol);
         }
 
 
-        ArithmeticEncoding.encodeSymbol(AdaptiveModel.EOF_SYMBOL, AdaptiveModel.cumFreq); // Codifică simbolul EOF
-        ArithmeticEncoding.doneEncoding();                     // Trimite ultimii biți
-        BitOutput.doneOutputtingBits();     // Finalizează ieșirea de biți
+        arithmeticEncoding.encodeSymbol(AdaptiveModel.EOF_SYMBOL, AdaptiveModel.cumFreq);
+        arithmeticEncoding.doneEncoding();
+        BitOutput.doneOutputtingBits();
 
         bitReader.close();
-
-
-        ////decoding
 
     }
 }
