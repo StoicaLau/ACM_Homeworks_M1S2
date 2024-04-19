@@ -27,7 +27,7 @@ public class BitReader {
             if (readByte == -1)
                 return -1;
             buff = (byte) readByte;
-//            System.out.println(buff);
+
         }
 
         int bit = (buff >> count) & 1;
@@ -44,7 +44,7 @@ public class BitReader {
             }
             value |= ((bit) << (nr - i - 1));
         }
-        System.out.println(value);
+
         return value;
     }
 }

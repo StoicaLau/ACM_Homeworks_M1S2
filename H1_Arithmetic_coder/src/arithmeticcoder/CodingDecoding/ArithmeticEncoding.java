@@ -33,7 +33,7 @@ public class ArithmeticEncoding {
      * it is start_encoding method
      */
     public ArithmeticEncoding(BitWriter bitWriter) {
-        this.bitWriter=bitWriter;
+        this.bitWriter = bitWriter;
         low = 0;
         high = ArithmeticParameters.TOP_VALUE;
         bitsToFollow = 0;
@@ -58,13 +58,14 @@ public class ArithmeticEncoding {
             } else {
                 break;
             }
-            low *= 2;
-            high = high * 2 + 1;
+            low = low << 1;
+            high = (high << 1) | 1;
         }
     }
 
     /**
      * write the last bits
+     *
      * @throws IOException
      */
     public void doneEncoding() throws IOException {
@@ -79,7 +80,7 @@ public class ArithmeticEncoding {
     private void bitsPlusFollow(int bit) throws IOException {
         bitWriter.writeBit(bit);
         while (bitsToFollow > 0) {
-           bitWriter.writeBit(bit ^ 1);
+            bitWriter.writeBit(bit ^ 1);
             bitsToFollow -= 1;
         }
     }

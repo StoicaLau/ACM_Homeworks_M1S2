@@ -7,7 +7,8 @@ import arithmeticcoder.model.AdaptiveModel;
 
 import java.io.File;
 import java.io.IOException;
-
+//TODO ce ar trebui sa fac daca nu exista tipul de 32 de biti fara semn?
+//TODO tot ce inseamna operatii trebuie facut bitewise?
 public class MainEncoding {
     public static void main(String[] args) throws IOException {
 

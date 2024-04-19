@@ -56,9 +56,9 @@ public class ArithmeticDecoding {
             } else {
                 break;
             }
-            low = 2 * low;
-            high = 2 * high + 1;
-            value = 2 * value + bitReader.readBit();
+            low = low << 1;
+            high = high << 1 + 1;
+            value = (value << 2) | bitReader.readBit();
         }
 
         return symbol;

@@ -14,7 +14,15 @@ import java.io.IOException;
  */
 
 public class BitWriter {
+
+    /**
+     * buff
+     */
     private byte buff;
+
+    /**
+     * count
+     */
     private int count;
     private BufferedOutputStream outputStream;
 
