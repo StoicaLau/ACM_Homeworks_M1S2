@@ -1,3 +1,7 @@
+package arithmeticcoder.CodingDecoding;
+
+import arithmeticcoder.bittools.BitWriter;
+
 import java.io.IOException;
 
 /**
@@ -21,9 +25,15 @@ public class ArithmeticEncoding {
     private long bitsToFollow;
 
     /**
+     * bit writer;
+     */
+    private BitWriter bitWriter;
+
+    /**
      * it is start_encoding method
      */
-    public ArithmeticEncoding() {
+    public ArithmeticEncoding(BitWriter bitWriter) {
+        this.bitWriter=bitWriter;
         low = 0;
         high = ArithmeticParameters.TOP_VALUE;
         bitsToFollow = 0;
@@ -54,7 +64,7 @@ public class ArithmeticEncoding {
     }
 
     /**
-     * writ the last bits
+     * write the last bits
      * @throws IOException
      */
     public void doneEncoding() throws IOException {
@@ -67,9 +77,9 @@ public class ArithmeticEncoding {
     }
 
     private void bitsPlusFollow(int bit) throws IOException {
-        BitOutput.outputBit(bit);
+        bitWriter.writeBit(bit);
         while (bitsToFollow > 0) {
-            BitOutput.outputBit(bit ^ 1);
+           bitWriter.writeBit(bit ^ 1);
             bitsToFollow -= 1;
         }
     }

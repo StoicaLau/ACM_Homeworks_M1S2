@@ -1,3 +1,5 @@
+package arithmeticcoder.CodingDecoding;
+
 /**
  * This class is used only for accessing constant values
  */

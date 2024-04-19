@@ -1,4 +1,4 @@
-package com.myapp.h2_nlpc.mytools;
+package arithmeticcoder.bittools;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,6 +44,7 @@ public class BitReader {
             }
             value |= ((bit) << (nr - i - 1));
         }
+        System.out.println(value);
         return value;
     }
 }

@@ -321,7 +321,7 @@ public class AppController implements Initializable {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select an Directory");
 
-        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homework\\H2_NLPC");
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H2_NLPC");
         directoryChooser.setInitialDirectory(defaultDirectory);
 
         Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();

@@ -1,16 +1,26 @@
+package arithmeticcoder.CodingDecoding;
+
+import arithmeticcoder.bittools.BitReader;
+
 import java.io.IOException;
 
 public class ArithmeticDecoding {
-    private static long value;
-    private static long low, high;
+    private long value;
+    private long low, high;
+
+    /**
+     * bit reader
+     */
+    private BitReader bitReader;
 
     /**
      * it is the start_decoding method
      */
-    public ArithmeticDecoding() throws IOException {
+    public ArithmeticDecoding(BitReader bitReader) throws IOException {
+        this.bitReader = bitReader;
         value = 0;
         for (int i = 1; i <= ArithmeticParameters.CODE_VALUE_BITS; i++) {
-            value = 2 * value + BitInput.inputBit();
+            value = 2 * value + bitReader.readBit();
         }
         low = 0;
         high = ArithmeticParameters.TOP_VALUE;
@@ -48,7 +58,7 @@ public class ArithmeticDecoding {
             }
             low = 2 * low;
             high = 2 * high + 1;
-            value = 2 * value + BitInput.inputBit();
+            value = 2 * value + bitReader.readBit();
         }
 
         return symbol;

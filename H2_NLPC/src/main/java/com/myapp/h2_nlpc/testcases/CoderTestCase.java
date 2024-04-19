@@ -2,6 +2,7 @@ package com.myapp.h2_nlpc.testcases;
 
 import com.myapp.h2_nlpc.CoderAndDecoder.Coder;
 import com.myapp.h2_nlpc.CoderAndDecoder.CoderAndDecoderTools;
+
 import com.myapp.h2_nlpc.mytools.BitReader;
 import com.myapp.h2_nlpc.mytools.BitWriter;
 import javafx.scene.image.PixelWriter;
@@ -251,7 +252,7 @@ public class CoderTestCase {
             int[][] data = this.coder.getQuantizedErrorValues();
             for (int i = 0; i < 256; i++) {
                 for (int j = 0; j < 256; j++) {
-                    System.out.println(data[i][j]);
+
                     if (data[i][j] < 0) {
                         int value = Math.abs(data[i][j]);
                         bitWriter.writeNBits(1, 1);

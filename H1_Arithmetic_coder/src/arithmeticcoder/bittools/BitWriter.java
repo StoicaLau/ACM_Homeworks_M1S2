@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.myapp.h2_nlpc.mytools;
+package arithmeticcoder.bittools;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -42,7 +42,7 @@ public class BitWriter {
 
     public void writeNBits(int bits, int nr) throws IOException {
         for (int i = nr - 1; i >= 0; i--) {
-            int bit = (bits >>(nr-i-1)) & 1;
+            int bit = (bits >> i) & 1;
             writeBit(bit);
         }
     }
