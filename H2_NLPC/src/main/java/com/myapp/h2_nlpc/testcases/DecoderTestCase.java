@@ -111,35 +111,6 @@ public class DecoderTestCase {
         return writableImage;
     }
 
-//    /**
-//     * start decoding quantized error
-//     *
-//     * @return a decoded value image file
-//     * @throws IOException an exception
-//     */
-//    public File startDecoding() throws IOException {
-//        this.decoder.decodeImage();
-//
-//        this.predictorType = this.decoder.getPredictorType();
-//        this.k = this.decoder.getK();
-//
-//        int[][] data = this.decoder.getDecodedValues();
-//
-//        File file = new File("imageDecode.bmp");
-//        BufferedImage bufferedImage = new BufferedImage(256, 256, BufferedImage.TYPE_BYTE_GRAY);
-//        for (int i = 0; i < 256; i++) {
-//            for (int j = 0; j < 256; j++) {
-//                int value = data[i][j];
-//                value = (value << 16) | (value << 8) | value;
-//                bufferedImage.setRGB(j, 255 - i, value);
-//
-//            }
-//
-//        }
-//        ImageIO.write(bufferedImage, "BMP", file);
-//        return file;
-//    }
-
     /***
      * get data from original image and create a frequency array for histogram
      * @return a frequency  array

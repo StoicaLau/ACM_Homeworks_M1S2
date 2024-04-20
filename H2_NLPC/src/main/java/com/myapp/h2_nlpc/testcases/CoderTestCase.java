@@ -2,7 +2,6 @@ package com.myapp.h2_nlpc.testcases;
 
 import com.myapp.h2_nlpc.CoderAndDecoder.Coder;
 import com.myapp.h2_nlpc.CoderAndDecoder.CoderAndDecoderTools;
-
 import com.myapp.h2_nlpc.mytools.BitReader;
 import com.myapp.h2_nlpc.mytools.BitWriter;
 import javafx.scene.image.PixelWriter;
@@ -13,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+//TODO pt   valori -,  index=value+(2^K)-1 , k este nr lini ,
+//TODO pt valori +, index=value
+//TODO verify each predictor a+b-c/2
 
 /**
  * Coder TestCase
@@ -74,7 +76,6 @@ public class CoderTestCase {
     }
 
 
-
     /**
      * get the prediction Type
      *
@@ -120,9 +121,8 @@ public class CoderTestCase {
      * @param imageType the image type
      * @param contrast  the contrast of image
      * @return a file with the image
-     * @throws IOException an exception
      */
-    public WritableImage createErrorImage(String imageType, double contrast) throws IOException {
+    public WritableImage createErrorImage(String imageType, double contrast) {
 
         int[][] data = new int[256][256];
         if (imageType.equals("prediction error"))
@@ -147,37 +147,6 @@ public class CoderTestCase {
         return writableImage;
     }
 
-//    /**
-//     //     * Create the error image
-//     //     *
-//     //     * @param imageType the image type
-//     //     * @param contrast  the contrast of image
-//     //     * @return a file with the image
-//     //     * @throws IOException an exception
-//     //     */
-//    public File createErrorImage(String imageType, double contrast) throws IOException {
-//
-//        int[][] data = new int[256][256];
-//        if (imageType.equals("prediction error"))
-//            data = this.coder.getErrorValues();
-//        if (imageType.equals("Q prediction error"))
-//            data = this.coder.getQuantizedErrorValues();
-//
-//        File file = new File("imageError.bmp");
-//        BufferedImage bufferedImage = new BufferedImage(256, 256, BufferedImage.TYPE_BYTE_GRAY);
-//
-//        for (int i = 0; i < 256; i++) {
-//            for (int j = 0; j < 256; j++) {
-//                int value = (int)(data[i][j]*contrast)+128;
-//                value = (value << 16) | (value << 8) | value;
-//                bufferedImage.setRGB(j, 255 - i, value);
-//
-//            }
-//
-//        }
-//        ImageIO.write(bufferedImage, "BMP", file);
-//        return file;
-//    }
 
     /**
      * compute min and max error( min max of Original-Decode)
@@ -249,25 +218,72 @@ public class CoderTestCase {
 
 
         if (saveMode.equals("Fixed 9b")) {
-            int[][] data = this.coder.getQuantizedErrorValues();
-            for (int i = 0; i < 256; i++) {
-                for (int j = 0; j < 256; j++) {
+            this.saveAsFixed9b(bitWriter);
 
-                    if (data[i][j] < 0) {
-                        int value = Math.abs(data[i][j]);
-                        bitWriter.writeNBits(1, 1);
-                        bitWriter.writeNBits(value, 8);
-                    } else {
-                        bitWriter.writeNBits(0, 1);
-                        bitWriter.writeNBits(data[i][j], 8);
-                    }
-                }
-            }
         } else if (saveMode.equals("Table")) {
-
+            this.saveAsTable(bitWriter);
         }
 
         bitWriter.close();
+    }
+
+    /**
+     * save the quantized error in fixed 9 bits
+     *
+     * @param bitWriter the bit writer
+     * @throws IOException an exception
+     */
+    private void saveAsFixed9b(BitWriter bitWriter) throws IOException {
+        int[][] data = this.coder.getQuantizedErrorValues();
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+
+                if (data[i][j] < 0) {
+                    int value = Math.abs(data[i][j]);
+                    bitWriter.writeNBits(1, 1);
+                    bitWriter.writeNBits(value, 8);
+                } else {
+                    bitWriter.writeNBits(0, 1);
+                    bitWriter.writeNBits(data[i][j], 8);
+                }
+            }
+        }
+    }
+
+    /**
+     * save as coordinates of the table
+     * send line, index;
+     *
+     * @param bitWriter
+     */
+    private void saveAsTable(BitWriter bitWriter) throws IOException {
+        int[][] data = this.coder.getQuantizedErrorValues();
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                if (data[i][j] == 0) {
+                    bitWriter.writeNBits(0, 8);
+                    bitWriter.writeNBits(0, 9);
+                } else {
+                    int line = 0;
+                    for (line = 0; Math.pow(2, line) <= Math.abs(data[i][j]); line++) ;
+                    int lineValue = 0;
+                    int kLine = line;
+                    for (; line > 0; line--) {
+                        lineValue = (lineValue << 1) | 1;
+                    }
+                    int index = 0;
+                    if (data[i][j] > 0) {
+                        index = data[i][j];
+                    } else {
+                        index = data[i][j] + (int) Math.pow(2, kLine) - 1;
+
+                    }
+                    bitWriter.writeNBits(lineValue, 8);
+                    bitWriter.writeNBits(index, 9);
+                }
+
+            }
+        }
     }
 
     /***

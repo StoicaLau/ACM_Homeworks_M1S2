@@ -58,7 +58,7 @@ public class Decoder {
         this.quantizedErrorValues = new int[256][256];
         this.dequantizedErrorValues = new int[256][256];
         this.decodedValues = new int[256][256];
-        this.imageHeader=new ArrayList<>();
+        this.imageHeader = new ArrayList<>();
 
 
         BitReader bitReader = new BitReader(file);
@@ -85,6 +85,7 @@ public class Decoder {
                 this.setQuantizedErrorValuesFromFixedSaveMode(bitReader);
                 break;
             case "Table":
+                this.setQuantizedErrorValuesFromTableSaveMode(bitReader);
                 break;
             case "Arithmetic":
                 break;
@@ -167,6 +168,8 @@ public class Decoder {
 
     /**
      * set quantized error values if the format save si Fixed
+     *
+     * @param bitReader the bit reader
      */
     private void setQuantizedErrorValuesFromFixedSaveMode(BitReader bitReader) throws IOException {
         for (int i = 0; i < 256; i++) {
@@ -176,6 +179,40 @@ public class Decoder {
                 if (numberType == 1)
                     value = -value;
                 this.quantizedErrorValues[i][j] = value;
+            }
+        }
+    }
+
+    /**
+     * set quantized error value if the format is Table
+     *
+     * @param bitReader the bit reader
+     * @throws IOException an exception;
+     */
+    private void setQuantizedErrorValuesFromTableSaveMode(BitReader bitReader) throws IOException {
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+
+                int lineValue = bitReader.readNBits(8);
+                int index = bitReader.readNBits(9);
+                if (lineValue == 0 && index == 0) {
+                    this.quantizedErrorValues[i][j] = 0;
+                } else {
+                    int line = 0;
+                    for (; lineValue > 0; lineValue = lineValue >> 1) {
+                        int bit = lineValue & 1;
+                        if (bit == 1)
+                            line++;
+                    }
+                    if (index >= Math.pow(2, (line - 1))) {
+                        this.quantizedErrorValues[i][j] = index;
+
+                    } else {
+                        this.quantizedErrorValues[i][j] = index - (int) Math.pow(2, line) + 1;
+                    }
+
+
+                }
             }
         }
     }
