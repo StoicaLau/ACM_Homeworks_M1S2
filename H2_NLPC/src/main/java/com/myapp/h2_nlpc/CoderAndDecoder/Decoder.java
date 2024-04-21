@@ -263,6 +263,7 @@ public class Decoder {
                             case "B" -> this.predictedValues[i][j] = b;
                             case "C" -> this.predictedValues[i][j] = c;
                             case "A+B-C" -> this.predictedValues[i][j] = a + b - c;
+                            case "A+(B-C)/2"-> this.predictedValues[i][j]=a+(b-c)/2;
                             case "(A+B-C)/2" -> this.predictedValues[i][j] = (a + b - c) / 2;
                             case "B+(A-C)/2" -> this.predictedValues[i][j] = b + (a - c) / 2;
                             case "(A+B)/2" -> this.predictedValues[i][j] = (a + b) / 2;

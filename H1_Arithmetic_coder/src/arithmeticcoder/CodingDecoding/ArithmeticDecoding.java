@@ -39,6 +39,7 @@ public class ArithmeticDecoding {
         int cum = (int) ((((value - low) + 1) * cumFreq[0] - 1) / range);
         int symbol;
         for (symbol = 1; cumFreq[symbol] > cum; symbol++) ;
+
         high = low + ((range * cumFreq[symbol - 1]) / cumFreq[0] - 1);
         low = low + (range * cumFreq[symbol]) / (cumFreq[0]);
 
@@ -57,8 +58,8 @@ public class ArithmeticDecoding {
                 break;
             }
             low = low << 1;
-            high = high << 1 + 1;
-            value = (value << 2) | bitReader.readBit();
+            high = high << 1 | 1;
+            value = (value <<1) | bitReader.readBit();
         }
 
         return symbol;

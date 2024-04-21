@@ -68,6 +68,7 @@ public class ArithmeticEncoding {
      *
      * @throws IOException
      */
+    //TODO dc am bittTofolow+=1
     public void doneEncoding() throws IOException {
         bitsToFollow += 1;
         if (low < ArithmeticParameters.FIRST_QTR) {

@@ -148,6 +148,9 @@ public class Coder {
                             case "C":
                                 this.predictedValues[i][j] = c;
                                 break;
+                            case "A+(B-C)/2":
+                                this.predictedValues[i][j]=a+(b-c)/2;
+                                break;
                             case "A+B-C":
                                 this.predictedValues[i][j] = a + b - c;
                                 break;

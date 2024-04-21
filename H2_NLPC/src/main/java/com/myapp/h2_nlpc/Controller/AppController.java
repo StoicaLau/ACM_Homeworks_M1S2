@@ -147,7 +147,14 @@ public class AppController implements Initializable {
             double scale;
             String scaleAsString = this.tfRescaling.getText();
             if (!scaleAsString.equals("")) {
-                scale = Double.parseDouble(scaleAsString);
+                try{
+                    scale = Double.parseDouble(scaleAsString);
+                }catch (NumberFormatException e){
+                    String title = "Wrong scale parameter";
+                    String message = "The scale parameter is not a number!";
+                    this.showDialog(title, message);
+                    return;
+                }
                 boolean coderOptions = false;
                 for (int i = 0; i < CoderAndDecoderTools.CODER_OPTIONS.length; i++) {
                     if (CoderAndDecoderTools.CODER_OPTIONS[i].equals(histogramSource)) {
@@ -187,7 +194,7 @@ public class AppController implements Initializable {
 
             } else {
                 String title = "Wrong scale parameter";
-                String message = "The scale parameter is null!";
+                String message = "The scale parameter is not a number!";
                 this.showDialog(title, message);
             }
         }
@@ -214,7 +221,7 @@ public class AppController implements Initializable {
         double startX = 40;
         double startY = height - 40;
 
-        double maxCount = 1000 ;
+        double maxCount = 10000 ;
 //
 
         histogram.setFill(Color.BLACK);
