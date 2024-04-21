@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="1200.0">
+         <children>
+            <ImageView fx:id="iwDecodedImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets left="10.0" />
+               </StackPane.margin>
+            </ImageView>
+            <ImageView fx:id="iwOrigImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+               <StackPane.margin>
+                  <Insets left="10.0" />
+               </StackPane.margin></ImageView>
+            <ProgressBar fx:id="pbBar" prefHeight="18.0" prefWidth="488.0" progress="0.0" rotate="90.0" StackPane.alignment="CENTER" />
+         </children>
+      </StackPane>
+      <HBox prefHeight="200.0">
+         <children>
+            <StackPane prefHeight="200.0" prefWidth="228.0">
+               <children>
+                  <Button fx:id="btnProcess" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
+                  <Button fx:id="btnLoadOriginalImage" mnemonicParsing="false" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets bottom="100.0" />
+                     </StackPane.margin>
+                  </Button>
+                  <Button fx:id="btnSaveOriginalImage" mnemonicParsing="false" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets top="100.0" />
+                     </StackPane.margin>
+                  </Button>
+               </children></StackPane>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <Label text="Values" StackPane.alignment="TOP_CENTER">
+                     <StackPane.margin>
+                        <Insets top="20.0" />
+                     </StackPane.margin>
+                  </Label>
+               </children>
+            </StackPane>
+            <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0">
+               <children>
+                  <ImageView fx:id="iwRangeBlock" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets left="20.0" />
+                     </StackPane.margin>
+                  </ImageView>
+                  <ImageView fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="20.0" />
+                     </StackPane.margin>
+                  </ImageView>
+               </children></StackPane>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="btnLoadInitialImage" mnemonicParsing="false" text="Load initial image" />
+               </children>
+            </StackPane>
+            <StackPane prefHeight="200.0" prefWidth="228.0">
+               <children>
+                  <Button fx:id="btnDecode" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
+                  <Button fx:id="btnLoadFic" mnemonicParsing="false" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets bottom="100.0" />
+                     </StackPane.margin>
+                  </Button>
+                  <Button fx:id="btnSaveDecodedImage" mnemonicParsing="false" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets top="100.0" />
+                     </StackPane.margin>
+                  </Button>
+               </children>
+            </StackPane>
+            <Label text="Label" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
