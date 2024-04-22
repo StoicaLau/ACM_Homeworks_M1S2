@@ -65,7 +65,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.h3_fractal_image_coder/com.h3_fractal_image_coder.HelloApplication
+                                com.example.h3_fractal_image_coder/com.h3_fractal_image_coder.Application
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

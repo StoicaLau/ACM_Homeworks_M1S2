@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-//TODO pt   valori -,  index=value+(2^K)-1 , k este nr lini ,
-//TODO pt valori +, index=value
-//TODO verify each predictor a+b-c/2
+
 
 /**
  * Coder TestCase
@@ -46,13 +44,14 @@ public class CoderTestCase {
     private String predictorType;
 
     /**
+     * Constructor
      * read encode file
      * init the coder
      *
      * @param file the image file
      * @throws IOException an exception
      */
-    public void initCoder(File file) throws IOException {
+    public CoderTestCase(File file) throws IOException {
 
         this.fileName = file.getName();
         this.imageHeader = new ArrayList<>();

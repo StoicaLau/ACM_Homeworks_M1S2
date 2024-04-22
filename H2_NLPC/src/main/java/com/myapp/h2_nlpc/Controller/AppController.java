@@ -122,8 +122,6 @@ public class AppController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        this.coderTestCase = new CoderTestCase();
         this.decoderTestCase = new DecoderTestCase();
         this.cbHistogramSource.valueProperty().addListener((observable, oldValue, newValue) -> this.refreshHistogram());
         tfRescaling.setOnAction(event -> this.refreshHistogram());
@@ -286,7 +284,7 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             this.iwOriginalImage.setImage(image);
-            this.coderTestCase.initCoder(selectedFile);
+            this.coderTestCase=new CoderTestCase(selectedFile);
             this.changeInterfaceAfterLoadOriginalImageEvent();
         }
 

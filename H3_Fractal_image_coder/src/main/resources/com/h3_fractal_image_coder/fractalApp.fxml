@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.h3_fractal_image_coder.controller.AppController">
    <children>
       <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="1200.0">
          <children>
@@ -18,7 +18,7 @@
                   <Insets left="10.0" />
                </StackPane.margin>
             </ImageView>
-            <ImageView fx:id="iwOrigImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+            <ImageView fx:id="iwOriginalImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
                <StackPane.margin>
                   <Insets left="10.0" />
                </StackPane.margin></ImageView>
@@ -29,13 +29,13 @@
          <children>
             <StackPane prefHeight="200.0" prefWidth="228.0">
                <children>
-                  <Button fx:id="btnProcess" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
-                  <Button fx:id="btnLoadOriginalImage" mnemonicParsing="false" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
+                  <Button fx:id="btnProcess" disable="true" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
+                  <Button fx:id="btnLoadOriginalImage" mnemonicParsing="false" onAction="#onBtnLoadOriginalImageClick" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
                      <StackPane.margin>
                         <Insets bottom="100.0" />
                      </StackPane.margin>
                   </Button>
-                  <Button fx:id="btnSaveOriginalImage" mnemonicParsing="false" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
+                  <Button fx:id="btnSaveOriginalImage" disable="true" mnemonicParsing="false" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
                      <StackPane.margin>
                         <Insets top="100.0" />
                      </StackPane.margin>
