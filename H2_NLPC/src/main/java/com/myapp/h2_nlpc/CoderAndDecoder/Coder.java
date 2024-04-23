@@ -128,6 +128,7 @@ public class Coder {
             System.out.println("type = " + type);
             for (int i = 0; i < 256; i++) {
                 for (int j = 0; j < 256; j++) {
+                    //TODO
                     if (i == 0 && j == 0)
                         this.predictedValues[i][j] = 128;
                     else if (i == 0) {

@@ -58,8 +58,8 @@ public class ArithmeticEncoding {
             } else {
                 break;
             }
-            low = low << 1;
-            high = (high << 1) | 1;
+            low = (low << 1)& ArithmeticParameters.MASK32B;
+            high = ((high << 1) | 1)& ArithmeticParameters.MASK32B;
         }
     }
 

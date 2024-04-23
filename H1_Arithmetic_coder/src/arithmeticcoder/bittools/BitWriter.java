@@ -14,15 +14,7 @@ import java.io.IOException;
  */
 
 public class BitWriter {
-
-    /**
-     * buff
-     */
     private byte buff;
-
-    /**
-     * count
-     */
     private int count;
     private BufferedOutputStream outputStream;
 
@@ -50,7 +42,7 @@ public class BitWriter {
 
     public void writeNBits(int bits, int nr) throws IOException {
         for (int i = nr - 1; i >= 0; i--) {
-            int bit = (bits >> i) & 1;
+            int bit = (bits >>(nr-i-1)) & 1;
             writeBit(bit);
         }
     }

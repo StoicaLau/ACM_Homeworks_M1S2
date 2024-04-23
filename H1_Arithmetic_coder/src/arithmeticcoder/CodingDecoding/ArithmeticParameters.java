@@ -5,7 +5,7 @@ package arithmeticcoder.CodingDecoding;
  */
 public class ArithmeticParameters {
     /**
-     *  code value bits
+     * code value bits
      */
     public static final int CODE_VALUE_BITS = 16;
 
@@ -13,7 +13,6 @@ public class ArithmeticParameters {
      * biggest value 2^16(code_value_bits
      */
     public static final long TOP_VALUE = (1L << CODE_VALUE_BITS) - 1;
-
     /**
      * first qtr ,first segment
      */
@@ -24,9 +23,13 @@ public class ArithmeticParameters {
      * half
      */
     public static final long HALF = 2 * FIRST_QTR;
-
     /**
      * third qtr
      */
     public static final long THIRD_QTR = 3 * FIRST_QTR;
+
+    /**
+     * mask 32 bits
+     */
+    public static final long MASK32B = 0xFFFFFFFFL;
 }

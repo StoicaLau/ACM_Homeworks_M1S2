@@ -4,9 +4,11 @@ import arithmeticcoder.bittools.BitReader;
 
 import java.io.IOException;
 
+//TODO arithmetic
 public class ArithmeticDecoding {
     private long value;
     private long low, high;
+    //TODO faci masca pe 32 de biti
 
     /**
      * bit reader
@@ -57,9 +59,9 @@ public class ArithmeticDecoding {
             } else {
                 break;
             }
-            low = low << 1;
-            high = high << 1 | 1;
-            value = (value <<1) | bitReader.readBit();
+            low = (low << 1) & ArithmeticParameters.MASK32B;
+            high = (high << 1 | 1) & ArithmeticParameters.MASK32B;
+            value = (value << 1) | bitReader.readBit();
         }
 
         return symbol;

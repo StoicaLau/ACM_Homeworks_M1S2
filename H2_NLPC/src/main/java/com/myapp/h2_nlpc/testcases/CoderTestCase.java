@@ -255,6 +255,7 @@ public class CoderTestCase {
      *
      * @param bitWriter
      */
+    //TODO  trimite un
     private void saveAsTable(BitWriter bitWriter) throws IOException {
         int[][] data = this.coder.getQuantizedErrorValues();
         for (int i = 0; i < 256; i++) {
