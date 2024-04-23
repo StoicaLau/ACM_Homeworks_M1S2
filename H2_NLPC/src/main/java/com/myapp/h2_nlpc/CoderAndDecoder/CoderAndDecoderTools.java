@@ -69,4 +69,65 @@ public class CoderAndDecoderTools {
             }
         return histogramData;
     }
+
+    /**
+     * predict the value at a specific line and specific row
+     *
+     * @param i             row
+     * @param j             column
+     * @param type          the type of predictor
+     * @param decodedValues the decoded values matrix
+     * @return the predicted value
+     */
+    public static int predictValue(int i, int j, String type, int[][] decodedValues) {
+        int predictedValue = 128;
+        if (i == 0 && j == 0)
+            predictedValue = 128;
+        else if (i == 0) {
+            predictedValue = decodedValues[i][j - 1];
+        } else if (j == 0) {
+            predictedValue = decodedValues[i - 1][j];
+        } else {
+            int a = decodedValues[i][j - 1];
+            int b = decodedValues[i - 1][j];
+            int c = decodedValues[i - 1][j - 1];
+            switch (type) {
+                case "A":
+                    predictedValue = a;
+                    break;
+                case "B":
+                    predictedValue = b;
+                    break;
+                case "C":
+                    predictedValue = c;
+                    break;
+                case "A+(B-C)/2":
+                    predictedValue = a + (b - c) / 2;
+                    break;
+                case "A+B-C":
+                    predictedValue = a + b - c;
+                    break;
+                case "(A+B-C)/2":
+                    predictedValue = (a + b - c) / 2;
+                    break;
+                case "B+(A-C)/2":
+                    predictedValue = b + (a - c) / 2;
+                    break;
+                case "(A+B)/2":
+                    predictedValue = (a + b) / 2;
+                    break;
+                case "JPEGLS":
+                    if (c >= Math.max(a, b))
+                        predictedValue = Math.min(a, b);
+                    else if (c <= Math.min(a, b)) {
+                        predictedValue = Math.max(a, b);
+                    } else {
+                        predictedValue = a + b - c;
+                    }
+                    break;
+            }
+        }
+
+        return predictedValue;
+    }
 }

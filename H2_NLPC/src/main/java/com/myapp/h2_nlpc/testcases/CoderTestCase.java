@@ -261,16 +261,17 @@ public class CoderTestCase {
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 256; j++) {
                 if (data[i][j] == 0) {
-                    bitWriter.writeNBits(0, 8);
-                    bitWriter.writeNBits(0, 9);
+                    bitWriter.writeBit(0);
+                    bitWriter.writeBit(0);
                 } else {
                     int line = 0;
                     for (line = 0; Math.pow(2, line) <= Math.abs(data[i][j]); line++) ;
-                    int lineValue = 0;
+                    
                     int kLine = line;
                     for (; line > 0; line--) {
-                        lineValue = (lineValue << 1) | 1;
+                        bitWriter.writeBit(1);
                     }
+                    bitWriter.writeBit(0);
                     int index = 0;
                     if (data[i][j] > 0) {
                         index = data[i][j];
@@ -278,8 +279,8 @@ public class CoderTestCase {
                         index = data[i][j] + (int) Math.pow(2, kLine) - 1;
 
                     }
-                    bitWriter.writeNBits(lineValue, 8);
-                    bitWriter.writeNBits(index, 9);
+
+                    bitWriter.writeNBits(index, kLine);
                 }
 
             }

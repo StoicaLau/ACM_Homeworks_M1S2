@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Coder TestCase
  */
+//TODO minim la DI la fiecare ri
 public class CoderTestCase {
 
     /**

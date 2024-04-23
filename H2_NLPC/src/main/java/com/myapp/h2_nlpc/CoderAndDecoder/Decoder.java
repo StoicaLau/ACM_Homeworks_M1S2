@@ -73,11 +73,8 @@ public class Decoder {
         int saveModeIndex = bitReader.readNBits(8);
 
 
-        System.out.println(predictorTypeIndex);
         this.predictorType = CoderAndDecoderTools.PREDICTOR_TYPE[predictorTypeIndex];
         this.k = kFromFile;
-        System.out.println(k);
-        System.out.println(saveModeIndex);
         this.saveMode = CoderAndDecoderTools.SAVE_MODE[saveModeIndex];
 
         switch (this.saveMode) {
@@ -193,25 +190,24 @@ public class Decoder {
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 256; j++) {
 
-                int lineValue = bitReader.readNBits(8);
-                int index = bitReader.readNBits(9);
-                if (lineValue == 0 && index == 0) {
-                    this.quantizedErrorValues[i][j] = 0;
+
+                int lineBit = bitReader.readBit();
+                if (lineBit == 0) {
+                    this.quantizedErrorValues[i][j] = bitReader.readBit();
                 } else {
                     int line = 0;
-                    for (; lineValue > 0; lineValue = lineValue >> 1) {
-                        int bit = lineValue & 1;
-                        if (bit == 1)
-                            line++;
+                    while (lineBit != 0) {
+                        line++;
+                        lineBit = bitReader.readBit();
                     }
+
+                    int index = bitReader.readNBits(line);
                     if (index >= Math.pow(2, (line - 1))) {
                         this.quantizedErrorValues[i][j] = index;
 
                     } else {
                         this.quantizedErrorValues[i][j] = index - (int) Math.pow(2, line) + 1;
                     }
-
-
                 }
             }
         }
@@ -235,51 +231,12 @@ public class Decoder {
      * use a predictor to decode the image
      */
     public void decodeImage() {
-        System.out.println("k" + this.k);
-//        this.predictedValues = new int[256][256];
-//        this.dequantizedErrorValues = new int[256][256];
-//        this.decodedValues = new int[256][256];
-
         if (this.predictorType.equals("128")) {
             this.usePredictor128();
         } else {
             for (int i = 0; i < 256; i++) {
                 for (int j = 0; j < 256; j++) {
-                    if (i == 0 && j == 0) {
-                        this.predictedValues[i][j] = 128;
-                    } else if (i == 0) {
-
-                        this.predictedValues[i][j] = this.decodedValues[i][j - 1];
-                        System.out.println();
-
-                    } else if (j == 0) {
-                        this.predictedValues[i][j] = this.decodedValues[i - 1][j];
-                    } else {
-                        int a = this.decodedValues[i][j - 1];
-                        int b = this.decodedValues[i - 1][j];
-                        int c = this.decodedValues[i - 1][j - 1];
-                        switch (this.predictorType) {
-                            case "A" -> this.predictedValues[i][j] = a;
-                            case "B" -> this.predictedValues[i][j] = b;
-                            case "C" -> this.predictedValues[i][j] = c;
-                            case "A+B-C" -> this.predictedValues[i][j] = a + b - c;
-                            case "A+(B-C)/2"-> this.predictedValues[i][j]=a+(b-c)/2;
-                            case "(A+B-C)/2" -> this.predictedValues[i][j] = (a + b - c) / 2;
-                            case "B+(A-C)/2" -> this.predictedValues[i][j] = b + (a - c) / 2;
-                            case "(A+B)/2" -> this.predictedValues[i][j] = (a + b) / 2;
-                            case "JPEGLS" -> {
-                                if (c >= Math.max(a, b))
-                                    this.predictedValues[i][j] = Math.min(a, b);
-                                else if (c <= Math.min(a, b)) {
-                                    this.predictedValues[i][j] = Math.max(a, b);
-                                } else {
-                                    this.predictedValues[i][j] = a + b - c;
-                                }
-                            }
-                        }
-
-                    }
-
+                    predictedValues[i][j] = CoderAndDecoderTools.predictValue(i, j, this.predictorType, this.decodedValues);
                     this.predictedValues[i][j] = CoderAndDecoderTools.normalizeValue(this.predictedValues[i][j]);
                     this.dequantizedErrorValues[i][j] = CoderAndDecoderTools.dequantizeError(this.quantizedErrorValues[i][j], this.k);
                     this.decodedValues[i][j] = this.predictedValues[i][j] + this.dequantizedErrorValues[i][j];

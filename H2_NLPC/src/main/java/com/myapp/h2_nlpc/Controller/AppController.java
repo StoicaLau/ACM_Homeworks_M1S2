@@ -219,7 +219,7 @@ public class AppController implements Initializable {
         double startX = 40;
         double startY = height - 40;
 
-        double maxCount = 10000 ;
+        double maxCount = 5000 ;
 //
 
         histogram.setFill(Color.BLACK);
@@ -535,7 +535,6 @@ public class AppController implements Initializable {
         cbHistogramSource.getItems().remove("DQ predictor error image from decoder");
 
         cbHistogramSource.getItems().remove("Decoded image from decoder");
-        cbHistogramSource.getItems().remove("Image prediction from from decoder");
 
 
         ObservableList<String> items = this.cbHistogramSource.getItems();
@@ -564,9 +563,6 @@ public class AppController implements Initializable {
             cbHistogramSource.getItems().add("Decoded image from decoder");
         }
 
-        if (!cbHistogramSource.getItems().contains("Image prediction from from decoder")) {
-            cbHistogramSource.getItems().add("Image prediction from from decoder");
-        }
 
         this.cbHistogramSource.setValue("Q predictor error image from decoder");
 
