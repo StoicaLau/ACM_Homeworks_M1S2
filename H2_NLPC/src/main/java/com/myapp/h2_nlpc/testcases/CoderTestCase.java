@@ -129,6 +129,7 @@ public class CoderTestCase {
         if (imageType.equals("prediction error"))
             data = this.coder.getErrorValues();
         if (imageType.equals("Q prediction error"))
+
             data = this.coder.getQuantizedErrorValues();
 
         WritableImage writableImage = new WritableImage(256, 256);
@@ -298,7 +299,7 @@ public class CoderTestCase {
      * @throws IOException an exception
      */
     private void saveAsArithmetic(BitWriter bitWriter) throws IOException {
-        System.out.println("daencode");
+
         int[][] data = this.coder.getQuantizedErrorValues();
         AdaptiveModel adaptiveModel = new AdaptiveModel();
         ArithmeticEncoding arithmeticEncoding = new ArithmeticEncoding(bitWriter);

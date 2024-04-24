@@ -24,11 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-//TODO display a clean interface with clean animation
-//TODO (optional) work more at the histogram to look better
-//TODO 3 display the error image
-//TODO Compute Error ,Compute error la ce?
-//TODO Save 9b bafta :(
+
 public class AppController implements Initializable {
 
 
@@ -145,9 +141,9 @@ public class AppController implements Initializable {
             double scale;
             String scaleAsString = this.tfRescaling.getText();
             if (!scaleAsString.equals("")) {
-                try{
+                try {
                     scale = Double.parseDouble(scaleAsString);
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     String title = "Wrong scale parameter";
                     String message = "The scale parameter is not a number!";
                     this.showDialog(title, message);
@@ -219,7 +215,7 @@ public class AppController implements Initializable {
         double startX = 40;
         double startY = height - 40;
 
-        double maxCount = 5000 ;
+        double maxCount = 5000;
 //
 
         histogram.setFill(Color.BLACK);
@@ -284,7 +280,7 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             this.iwOriginalImage.setImage(image);
-            this.coderTestCase=new CoderTestCase(selectedFile);
+            this.coderTestCase = new CoderTestCase(selectedFile);
             this.changeInterfaceAfterLoadOriginalImageEvent();
         }
 
@@ -298,7 +294,17 @@ public class AppController implements Initializable {
     protected void onBtnEncodeClick() {
         String kString = this.tfK.getText();
         if (!kString.equals("")) {
-            int k = Integer.parseInt(kString);
+            int k = -1;
+            try {
+                k = Integer.parseInt(kString);
+            } catch (NumberFormatException e) {
+                String title = "Wrong near-lossless parameter";
+                String message = "The near-lossless parameter is not a number!";
+                this.showDialog(title, message);
+                return;
+            }
+
+
             if (k >= 0 && k <= 10) {
                 String predictorType = this.cbPredictionSelection.getValue();
                 this.coderTestCase.startEncoding(predictorType, k);
@@ -308,6 +314,7 @@ public class AppController implements Initializable {
                 String message = "The near-lossless parameter is not between 0 and 10!";
                 this.showDialog(title, message);
             }
+
         } else {
             String title = "Wrong near-lossless parameter";
             String message = "The near-lossless parameter is null!";
@@ -412,8 +419,17 @@ public class AppController implements Initializable {
     @FXML
     protected void onBtnRefreshClick() throws IOException {
         String contrastString = this.tfContrast.getText();
+        double contrast = 0;
         if (!contrastString.equals("")) {
-            double contrast = Double.parseDouble(contrastString);
+            try {
+                contrast = Double.parseDouble(contrastString);
+            } catch (NumberFormatException e) {
+                String title = "Wrong contrast parameter";
+                String message = "The contrast parameter is not a number!";
+                this.showDialog(title, message);
+                return;
+            }
+
             String imageType = this.cbError.getValue();
             WritableImage writableImage = this.coderTestCase.createErrorImage(imageType, contrast);
             this.iwErrorImage.setImage(writableImage);

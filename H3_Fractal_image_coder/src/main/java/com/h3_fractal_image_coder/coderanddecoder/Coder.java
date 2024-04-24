@@ -2,6 +2,7 @@ package com.h3_fractal_image_coder.coderanddecoder;
 
 
 import com.h3_fractal_image_coder.Block;
+import javafx.util.Pair;
 
 /**
  * The coder Class
@@ -39,8 +40,8 @@ public class Coder {
         initializeRangeAndDomains();
         for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
             for (int j = 0; j < NUMBER_OF_DOMAINS; j++) {
-                System.out.println("range="+ranges[i][j].toString());
-                System.out.println("domains="+ domains[i][j].toString());
+                System.out.println("range=" + ranges[i][j].toString());
+                System.out.println("domains=" + domains[i][j].toString());
             }
         }
     }
@@ -101,6 +102,45 @@ public class Coder {
     }
 
 
+    /**
+     * use isometric to get the new x and new y
+     *
+     * @param x         x coordinate
+     * @param y         y coordinate
+     * @param indexType the index of isometric type
+     * @param size      the size of matrix
+     * @return a pair with new x coordinate and new y coordinate
+     */
+    private Pair<Integer, Integer> useIsometric(int x, int y, int indexType, int size) {
+        Pair<Integer, Integer> result = null;
+        switch (indexType) {
+            case 1:
+                result = new Pair<>(x, y);
+                break;
+            case 2:
+                result = new Pair<>(size - 1 - x, y);
+                break;
+            case 3:
+                result = new Pair<>(x, size - 1 - y);
+                break;
+            case 4:
+                result = new Pair<>(y, x);
+                break;
+            case 5:
+                result = new Pair<>(size - 1 - y, size - 1 - x);
+                break;
+            case 6:
+                result = new Pair<>(size - 1 - y, x);//test
+                break;
+            case 7:
+                result = new Pair<>(size - 1 - x, size - 1 - y);
+                break;
+            case 8:
+                result = new Pair<>(y, size - 1 - x);//test
+
+        }
+        return result;
+    }
 
 
 }
