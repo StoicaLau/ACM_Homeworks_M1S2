@@ -1,5 +1,7 @@
 package com.myapp.h2_nlpc.CoderAndDecoder;
 
+import com.myapp.h2_nlpc.arithmeticcoder.CodingDecoding.ArithmeticDecoding;
+import com.myapp.h2_nlpc.arithmeticcoder.model.AdaptiveModel;
 import com.myapp.h2_nlpc.mytools.BitReader;
 
 import java.io.File;
@@ -85,8 +87,10 @@ public class Decoder {
                 this.setQuantizedErrorValuesFromTableSaveMode(bitReader);
                 break;
             case "Arithmetic":
+                this.setQuantizedErrorValuesFromArithmeticSaveMode(bitReader);
                 break;
         }
+        bitReader.close();
 
 
     }
@@ -209,6 +213,24 @@ public class Decoder {
                         this.quantizedErrorValues[i][j] = index - (int) Math.pow(2, line) + 1;
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * set quantized error values if the format save si Arithmetic
+     *
+     * @param bitReader the bit reader
+     */
+    private void setQuantizedErrorValuesFromArithmeticSaveMode(BitReader bitReader) throws IOException {
+        AdaptiveModel adaptiveModel = new AdaptiveModel();
+        ArithmeticDecoding arithmeticDecoding = new ArithmeticDecoding(bitReader);
+        System.out.println("DaDecod");
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                int symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getSums());
+                this.quantizedErrorValues[i][j] = symbol - 255;
+                adaptiveModel.updateModel(symbol);
             }
         }
     }

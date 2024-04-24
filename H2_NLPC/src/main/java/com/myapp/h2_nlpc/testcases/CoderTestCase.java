@@ -2,6 +2,8 @@ package com.myapp.h2_nlpc.testcases;
 
 import com.myapp.h2_nlpc.CoderAndDecoder.Coder;
 import com.myapp.h2_nlpc.CoderAndDecoder.CoderAndDecoderTools;
+import com.myapp.h2_nlpc.arithmeticcoder.CodingDecoding.ArithmeticEncoding;
+import com.myapp.h2_nlpc.arithmeticcoder.model.AdaptiveModel;
 import com.myapp.h2_nlpc.mytools.BitReader;
 import com.myapp.h2_nlpc.mytools.BitWriter;
 import javafx.scene.image.PixelWriter;
@@ -221,6 +223,8 @@ public class CoderTestCase {
 
         } else if (saveMode.equals("Table")) {
             this.saveAsTable(bitWriter);
+        } else if (saveMode.equals("Arithmetic")) {
+            this.saveAsArithmetic(bitWriter);
         }
 
         bitWriter.close();
@@ -249,13 +253,13 @@ public class CoderTestCase {
         }
     }
 
+
     /**
      * save as coordinates of the table
      * send line, index;
      *
      * @param bitWriter
      */
-    //TODO  trimite un
     private void saveAsTable(BitWriter bitWriter) throws IOException {
         int[][] data = this.coder.getQuantizedErrorValues();
         for (int i = 0; i < 256; i++) {
@@ -266,7 +270,7 @@ public class CoderTestCase {
                 } else {
                     int line = 0;
                     for (line = 0; Math.pow(2, line) <= Math.abs(data[i][j]); line++) ;
-                    
+
                     int kLine = line;
                     for (; line > 0; line--) {
                         bitWriter.writeBit(1);
@@ -285,6 +289,28 @@ public class CoderTestCase {
 
             }
         }
+    }
+
+    /**
+     * save the quantized error using arithmetic code
+     *
+     * @param bitWriter the bit writer
+     * @throws IOException an exception
+     */
+    private void saveAsArithmetic(BitWriter bitWriter) throws IOException {
+        System.out.println("daencode");
+        int[][] data = this.coder.getQuantizedErrorValues();
+        AdaptiveModel adaptiveModel = new AdaptiveModel();
+        ArithmeticEncoding arithmeticEncoding = new ArithmeticEncoding(bitWriter);
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                int symbol = data[i][j] + 255;
+                arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getSums());
+                adaptiveModel.updateModel(symbol);
+            }
+        }
+        arithmeticEncoding.encodeSymbol(adaptiveModel.getEOF_SYMBOL(), adaptiveModel.getSums());
+        arithmeticEncoding.doneEncoding();
     }
 
     /***

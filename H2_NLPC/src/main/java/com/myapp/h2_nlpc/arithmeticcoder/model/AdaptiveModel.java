@@ -1,4 +1,4 @@
-package arithmeticcoder.model;
+package com.myapp.h2_nlpc.arithmeticcoder.model;
 
 //TODO custom EOF 27
 public class AdaptiveModel {
@@ -7,9 +7,8 @@ public class AdaptiveModel {
      * MODEL PARAMETERS model.h
      */
     private static final int MAX_FREQUENCY = 16383;
-    private static final int NO_OF_CHARS = 256;
-    private static final int EOF_SYMBOL = NO_OF_CHARS ;//256
-    //TODO MAYBE NO_OF_chaRS+1
+    private static final int NO_OF_CHARS = 511;
+    private static final int EOF_SYMBOL = NO_OF_CHARS;//256
     private static final int NO_OF_SYMBOLS = NO_OF_CHARS + 1;
 
 
@@ -31,7 +30,7 @@ public class AdaptiveModel {
     public AdaptiveModel() {
         for (int i = 0; i <= NO_OF_SYMBOLS; i++) {
             counts[i] = 1;
-            sums[i] = i ;
+            sums[i] = i;
         }
 
         counts[NO_OF_SYMBOLS] = 0;//S
@@ -50,15 +49,15 @@ public class AdaptiveModel {
         }
 
 //        for (i = symbol; counts[i] == counts[i + 1]; i++) ;
-        boolean search=true;
-        i=symbol;
-        while(search){
-            if(i==0){
-                search=false;
+        boolean search = true;
+        i = symbol;
+        while (search) {
+            if (i == 0) {
+                search = false;
             } else if (counts[i] == counts[i - 1]) {
                 i--;
-            }else {
-                search=false;
+            } else {
+                search = false;
             }
         }
 
