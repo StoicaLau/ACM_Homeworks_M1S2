@@ -16,7 +16,7 @@ public class MainDecoding {
         ArithmeticDecoding arithmeticDecoding = new ArithmeticDecoding(bitReader);
         while (true) {
             int symbol;
-            symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getCumFreq());
+            symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getSums());
 //            System.out.println(symbol);
             if (symbol == adaptiveModel.getEOF_SYMBOL())
                 break;

@@ -39,10 +39,12 @@ public class ArithmeticEncoding {
         bitsToFollow = 0;
     }
 
-    public void encodeSymbol(int symbol, int[] cumFreq) throws IOException {
+    public void encodeSymbol(int symbol, int[] sums) throws IOException {
         long range = high - low + 1;
-        high = low + (range * cumFreq[symbol - 1]) / cumFreq[0] - 1;
-        low = low + (range * cumFreq[symbol]) / cumFreq[0];
+        int noOfSymbols = sums.length - 1;
+       // System.out.println(symbol+":"+noOfSymbols);
+        high = low + (range * sums[symbol + 1]) / sums[noOfSymbols] - 1;
+        low = low + (range * sums[symbol]) / sums[noOfSymbols];
 
         while (true) {
             if (high < ArithmeticParameters.HALF) {
@@ -58,8 +60,8 @@ public class ArithmeticEncoding {
             } else {
                 break;
             }
-            low = (low << 1)& ArithmeticParameters.MASK32B;
-            high = ((high << 1) | 1)& ArithmeticParameters.MASK32B;
+            low = (low << 1) & ArithmeticParameters.MASK32B;
+            high = ((high << 1) | 1) & ArithmeticParameters.MASK32B;
         }
     }
 

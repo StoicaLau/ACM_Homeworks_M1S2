@@ -3,6 +3,7 @@ package arithmeticcoder.CodingDecoding;
 import arithmeticcoder.bittools.BitReader;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 //TODO arithmetic
 public class ArithmeticDecoding {
@@ -31,19 +32,24 @@ public class ArithmeticDecoding {
     /**
      * decode bit by bit
      *
-     * @param cumFreq cumulative frequent
+     * @param sums cumulative frequent
      * @return the decoded symbol
      * @throws IOException
      */
-    public int decodeSymbol(int[] cumFreq) throws IOException {
+    public int decodeSymbol(int[] sums) throws IOException {
 
         long range = high - low + 1;
-        int cum = (int) ((((value - low) + 1) * cumFreq[0] - 1) / range);
+        int noOfSymbols = sums.length - 1;
+        int cum = (int) ((((value - low) + 1) * sums[noOfSymbols] - 1) / range);
         int symbol;
-        for (symbol = 1; cumFreq[symbol] > cum; symbol++) ;
+        //System.out.println("sums = " +cum);
 
-        high = low + ((range * cumFreq[symbol - 1]) / cumFreq[0] - 1);
-        low = low + (range * cumFreq[symbol]) / (cumFreq[0]);
+        for (symbol = noOfSymbols-1; sums[symbol] > cum; symbol--) ;
+
+//        System.out.println((char)symbol+":"+symbol+" cum: "+cum+"sums: "+sums[noOfSymbols] +" high:"+high+"low: "+low);
+        //System.out.println(symbol);
+        high = low + ((range * sums[symbol + 1]) / sums[noOfSymbols] - 1);
+        low = low + (range * sums[symbol]) / (sums[noOfSymbols]);
 
         while (true) {
             if (high < ArithmeticParameters.HALF) {

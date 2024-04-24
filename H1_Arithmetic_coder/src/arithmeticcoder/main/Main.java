@@ -10,21 +10,28 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
+    public static final String INPUT_FILE_EXE = "P2_2_1_BNB_M5_V3_R1.exe";
+    public static final String OUTPUT_FILE_EXE = "P2_2_1_BNB_M5_V3_R1_out.exe";
+    public static final String INPUT_FILE_BIN = "test.bin";
+    public static final String OUTPUT_FILE_BIN = "test_output.bin";
     public static String PATH = "C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H1_Arithmetic_coder\\out";
-    public static String INPUT_FILE = PATH + "\\" + "test.bin";
+    public static final String INPUT_FILE = PATH + "\\" +INPUT_FILE_EXE;
 
-    public static String AUX_FILE = PATH + "\\" + "test_aux.bin";
-    ;
-    public static String OUTPUT_FILE = PATH + "\\" + "test_output.bin";
-    ;
+    public static final String AUX_FILE = PATH + "\\" + "test_aux.bin";
+
+    public static final String OUTPUT_FILE = PATH + "\\" + OUTPUT_FILE_EXE;
+
 
     public static void main(String[] args) throws IOException {
-            encoding();
-            decoding();
+
+        encoding();
+        System.out.println();
+        decoding();
 
     }
 
     public static void encoding() throws IOException {
+        System.out.println("Start encoding");
         AdaptiveModel adaptiveModel = new AdaptiveModel();
         File file = new File(AUX_FILE);
         BitWriter bitWriter = new BitWriter(file);
@@ -42,12 +49,13 @@ public class Main {
                 break;
 
             int symbol = ch;
-            arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getCumFreq());
+//            System.out.println("Char="+(char)(ch));
+            arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getSums());
             adaptiveModel.updateModel(symbol);
         }
 
 
-        arithmeticEncoding.encodeSymbol(adaptiveModel.getEOF_SYMBOL(), adaptiveModel.getCumFreq());
+        arithmeticEncoding.encodeSymbol(adaptiveModel.getEOF_SYMBOL(), adaptiveModel.getSums());
         arithmeticEncoding.doneEncoding();
 
         bitWriter.close();
@@ -56,6 +64,7 @@ public class Main {
     }
 
     public static void decoding() throws IOException {
+        System.out.println("Start decoding");
         File file = new File(AUX_FILE);
         BitReader bitReader = new BitReader(file);
         AdaptiveModel adaptiveModel = new AdaptiveModel();
@@ -66,19 +75,19 @@ public class Main {
 
         while (true) {
             int symbol;
-            symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getCumFreq());
+            symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getSums());
 //            System.out.println(symbol);
             if (symbol == adaptiveModel.getEOF_SYMBOL())
                 break;
             int ch = symbol;
-            System.out.print((char)(ch));
+//            System.out.print((char)(ch));
             bitWriter.writeNBits(ch, 8);
             adaptiveModel.updateModel(symbol);
         }
 
         bitReader.close();
         bitWriter.close();
-        System.out.println();
+
         System.out.println("Done decoding");
     }
 }

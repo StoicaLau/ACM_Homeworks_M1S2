@@ -29,12 +29,12 @@ public class MainEncoding {
                 break;
 
             int symbol = ch;
-            arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getCumFreq());
+            arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getSums());
             adaptiveModel.updateModel(symbol);
         }
 
 
-        arithmeticEncoding.encodeSymbol(adaptiveModel.getEOF_SYMBOL(), adaptiveModel.getCumFreq());
+        arithmeticEncoding.encodeSymbol(adaptiveModel.getEOF_SYMBOL(), adaptiveModel.getSums());
         arithmeticEncoding.doneEncoding();
 
         bitWriter.close();
