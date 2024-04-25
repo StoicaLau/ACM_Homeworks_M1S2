@@ -39,6 +39,38 @@ public class Block {
         this.sumSquared=sumSquared;
     }
 
+    /**
+     * get values
+     * @return values
+     */
+    public int[][] getValues() {
+        return values;
+    }
+
+    /**
+     * get size
+     * @return size
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * get sum
+     * @return sum
+     */
+    public int getSum() {
+        return sum;
+    }
+
+    /**
+     * get sum squared
+     * @return sum squared
+     */
+    public int getSumSquared() {
+        return sumSquared;
+    }
+
     @Override
     public String toString() {
         return "Block{" +

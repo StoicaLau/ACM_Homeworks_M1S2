@@ -63,7 +63,7 @@ public class Coder {
                     for (int xImage = xBegin; xImage < xBegin + BLOCK_SIZE; xImage++) {
                         int xBlock = xImage - xBegin;
                         int yBlock = yImage - yBegin;
-                        blockValues[xBlock][yBlock] = this.imageValues[yImage][xImage];
+                        blockValues[yBlock][xBlock] = this.imageValues[yImage][xImage];
                         sum += this.imageValues[yImage][xImage];
                         sumSquared += Math.pow(this.imageValues[yImage][xImage], 2);
                     }
@@ -101,6 +101,25 @@ public class Coder {
 
     }
 
+    public Block getIsometricRangeBlock(int x, int y, int isometricType) {
+        Block rangeBlock = this.getRangeBlock(x, y);
+        int size = rangeBlock.getSize();
+        int sum = rangeBlock.getSum();
+        int sumSquared = rangeBlock.getSumSquared();
+        int[][] currentValues = rangeBlock.getValues();
+        int[][] newValues = new int[size][size];
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Pair<Integer, Integer> coordinates = this.useIsometric(j, i, isometricType, size);
+                int newX = coordinates.getKey();
+                int newY = coordinates.getValue();
+                newValues[newY][newX] = currentValues[i][j];
+            }
+
+        }
+        return new Block(size, newValues, sum, sumSquared);
+    }
 
     /**
      * use isometric to get the new x and new y
@@ -114,33 +133,44 @@ public class Coder {
     private Pair<Integer, Integer> useIsometric(int x, int y, int indexType, int size) {
         Pair<Integer, Integer> result = null;
         switch (indexType) {
-            case 1:
+            case 0:
                 result = new Pair<>(x, y);
                 break;
-            case 2:
+            case 1:
                 result = new Pair<>(size - 1 - x, y);
                 break;
-            case 3:
+            case 2:
                 result = new Pair<>(x, size - 1 - y);
                 break;
-            case 4:
+            case 4://orig 3
                 result = new Pair<>(y, x);
                 break;
-            case 5:
+            case 3://orig 4
                 result = new Pair<>(size - 1 - y, size - 1 - x);
                 break;
-            case 6:
+            case 5:
                 result = new Pair<>(size - 1 - y, x);//test
                 break;
-            case 7:
+            case 6:
                 result = new Pair<>(size - 1 - x, size - 1 - y);
                 break;
-            case 8:
+            case 7:
                 result = new Pair<>(y, size - 1 - x);//test
 
         }
         return result;
     }
 
+    public Block getRangeBlock(int x, int y) {
+        return this.ranges[y][x];
+    }
 
+    /**
+     * get image value
+     *
+     * @return image value
+     */
+    public int[][] getImageValues() {
+        return imageValues;
+    }
 }

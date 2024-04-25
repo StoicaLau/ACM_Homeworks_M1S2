@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -18,11 +19,12 @@
                   <Insets left="10.0" />
                </StackPane.margin>
             </ImageView>
-            <ImageView fx:id="iwOriginalImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
-               <StackPane.margin>
-                  <Insets left="10.0" />
-               </StackPane.margin></ImageView>
             <ProgressBar fx:id="pbBar" prefHeight="18.0" prefWidth="488.0" progress="0.0" rotate="90.0" StackPane.alignment="CENTER" />
+            <Pane fx:id="pOriginalImage" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="530.0" prefWidth="530.0" StackPane.alignment="CENTER_LEFT">
+               <children>
+                  <ImageView fx:id="iwOriginalImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" x="10.0" y="10.0" />
+               </children>
+            </Pane>
          </children>
       </StackPane>
       <HBox prefHeight="200.0">
