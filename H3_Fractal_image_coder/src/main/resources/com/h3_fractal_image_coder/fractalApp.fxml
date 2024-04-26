@@ -19,7 +19,7 @@
                   <Insets left="10.0" />
                </StackPane.margin>
             </ImageView>
-            <ProgressBar fx:id="pbBar" prefHeight="18.0" prefWidth="488.0" progress="0.0" rotate="90.0" StackPane.alignment="CENTER" />
+            <ProgressBar fx:id="pbProgress" prefHeight="18.0" prefWidth="488.0" progress="0.0" rotate="270.0" StackPane.alignment="CENTER" />
             <Pane fx:id="pOriginalImage" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="530.0" prefWidth="530.0" StackPane.alignment="CENTER_LEFT">
                <children>
                   <ImageView fx:id="iwOriginalImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" x="10.0" y="10.0" />
@@ -31,7 +31,7 @@
          <children>
             <StackPane prefHeight="200.0" prefWidth="228.0">
                <children>
-                  <Button fx:id="btnProcess" disable="true" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
+                  <Button fx:id="btnProcess" disable="true" mnemonicParsing="false" onAction="#onBtnProcessClick" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
                   <Button fx:id="btnLoadOriginalImage" mnemonicParsing="false" onAction="#onBtnLoadOriginalImageClick" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
                      <StackPane.margin>
                         <Insets bottom="100.0" />
@@ -59,7 +59,7 @@
                         <Insets left="20.0" />
                      </StackPane.margin>
                   </ImageView>
-                  <ImageView fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                  <ImageView fx:id="iwDomainBlock" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
                      <StackPane.margin>
                         <Insets right="20.0" />
                      </StackPane.margin>

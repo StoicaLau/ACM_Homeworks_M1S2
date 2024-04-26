@@ -1,8 +1,8 @@
 package com.myapp.h2_nlpc.Controller;
 
 import com.myapp.h2_nlpc.CoderAndDecoder.CoderAndDecoderTools;
-import com.myapp.h2_nlpc.testcases.CoderTestCase;
-import com.myapp.h2_nlpc.testcases.DecoderTestCase;
+import com.myapp.h2_nlpc.testcases.CoderUseCase;
+import com.myapp.h2_nlpc.testcases.DecoderUseCase;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -105,12 +105,12 @@ public class AppController implements Initializable {
     /**
      * coder test cases
      */
-    private CoderTestCase coderTestCase;
+    private CoderUseCase coderUseCase;
 
     /**
      * Decoder test cases
      */
-    private DecoderTestCase decoderTestCase;
+    private DecoderUseCase decoderUseCase;
 
 
     /**
@@ -118,7 +118,7 @@ public class AppController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.decoderTestCase = new DecoderTestCase();
+        this.decoderUseCase = new DecoderUseCase();
         this.cbHistogramSource.valueProperty().addListener((observable, oldValue, newValue) -> this.refreshHistogram());
         tfRescaling.setOnAction(event -> this.refreshHistogram());
 
@@ -162,15 +162,15 @@ public class AppController implements Initializable {
                 int[] histogramData;
 
                 if (coderOptions) {
-                    histogramData = this.coderTestCase.getHistogram(histogramSource);
-                    imageName = this.coderTestCase.getFileName();
-                    predictorType = this.coderTestCase.getPredictorType();
-                    k = this.coderTestCase.getK();
+                    histogramData = this.coderUseCase.getHistogram(histogramSource);
+                    imageName = this.coderUseCase.getFileName();
+                    predictorType = this.coderUseCase.getPredictorType();
+                    k = this.coderUseCase.getK();
                 } else {
-                    histogramData = this.decoderTestCase.getHistogram(histogramSource);
-                    imageName = this.decoderTestCase.getFileName();
-                    predictorType = this.decoderTestCase.getPredictorType();
-                    k = this.decoderTestCase.getK();
+                    histogramData = this.decoderUseCase.getHistogram(histogramSource);
+                    imageName = this.decoderUseCase.getFileName();
+                    predictorType = this.decoderUseCase.getPredictorType();
+                    k = this.decoderUseCase.getK();
                 }
 
 
@@ -280,7 +280,7 @@ public class AppController implements Initializable {
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             this.iwOriginalImage.setImage(image);
-            this.coderTestCase = new CoderTestCase(selectedFile);
+            this.coderUseCase = new CoderUseCase(selectedFile);
             this.changeInterfaceAfterLoadOriginalImageEvent();
         }
 
@@ -307,7 +307,7 @@ public class AppController implements Initializable {
 
             if (k >= 0 && k <= 10) {
                 String predictorType = this.cbPredictionSelection.getValue();
-                this.coderTestCase.startEncoding(predictorType, k);
+                this.coderUseCase.startEncoding(predictorType, k);
                 this.changeInterfaceAfterEncodeEvent();
             } else {
                 String title = "Wrong near-lossless parameter";
@@ -342,7 +342,7 @@ public class AppController implements Initializable {
 
         if (selectedDirectory != null) {
             String saveMode = this.cbSaveMode.getValue();
-            this.coderTestCase.saveQuantizedErrorAsNLC(selectedDirectory, saveMode);
+            this.coderUseCase.saveQuantizedErrorAsNLC(selectedDirectory, saveMode);
 
         }
     }
@@ -367,7 +367,7 @@ public class AppController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            this.decoderTestCase.initDecoder(selectedFile);
+            this.decoderUseCase.initDecoder(selectedFile);
             this.changeInterfaceAfterLoadQuantizedErrorEvent();
         }
 
@@ -379,7 +379,7 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnDecodeClick() throws IOException {
-        WritableImage writableImage = this.decoderTestCase.startDecoding();
+        WritableImage writableImage = this.decoderUseCase.startDecoding();
         this.iwDecodedImage.setImage(writableImage);
 
         this.changeInterfaceAfterDecodeEvent();
@@ -405,7 +405,7 @@ public class AppController implements Initializable {
         File selectedDirectory = directoryChooser.showDialog(stage);
 
         if (selectedDirectory != null) {
-            this.decoderTestCase.saveDecodedFile(selectedDirectory);
+            this.decoderUseCase.saveDecodedFile(selectedDirectory);
 
         }
     }
@@ -431,7 +431,7 @@ public class AppController implements Initializable {
             }
 
             String imageType = this.cbError.getValue();
-            WritableImage writableImage = this.coderTestCase.createErrorImage(imageType, contrast);
+            WritableImage writableImage = this.coderUseCase.createErrorImage(imageType, contrast);
             this.iwErrorImage.setImage(writableImage);
 
 
@@ -449,7 +449,7 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnComputeErrorClick() {
-        int[] minMaxValue = this.coderTestCase.computeError();
+        int[] minMaxValue = this.coderUseCase.computeError();
 
         String message = "Min= " + minMaxValue[0];
         this.lblMinError.setText(message);

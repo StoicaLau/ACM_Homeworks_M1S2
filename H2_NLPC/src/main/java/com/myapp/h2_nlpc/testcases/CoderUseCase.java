@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Coder TestCase
  */
-public class CoderTestCase {
+public class CoderUseCase {
 
     /**
      * image header
@@ -53,7 +53,7 @@ public class CoderTestCase {
      * @param file the image file
      * @throws IOException an exception
      */
-    public CoderTestCase(File file) throws IOException {
+    public CoderUseCase(File file) throws IOException {
 
         this.fileName = file.getName();
         this.imageHeader = new ArrayList<>();

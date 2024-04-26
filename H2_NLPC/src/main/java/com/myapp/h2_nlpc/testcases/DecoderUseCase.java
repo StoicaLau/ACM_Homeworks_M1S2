@@ -14,7 +14,7 @@ import java.io.IOException;
  * Decoder test case
  */
 //TODO give k and predictor type
-public class DecoderTestCase {
+public class DecoderUseCase {
 
 
     /**

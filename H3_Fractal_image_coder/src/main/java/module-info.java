@@ -3,6 +3,7 @@ module com.example.h3_fractal_image_coder {
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
+    requires javatuples;
 
     opens com.h3_fractal_image_coder to javafx.fxml;
     exports com.h3_fractal_image_coder;
