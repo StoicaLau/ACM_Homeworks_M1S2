@@ -3,6 +3,7 @@ package com.h3_fractal_image_coder.testcases;
 import com.h3_fractal_image_coder.RangeDetails;
 import com.h3_fractal_image_coder.coderanddecoder.Coder;
 import com.h3_fractal_image_coder.mytools.BitReader;
+import com.h3_fractal_image_coder.mytools.BitWriter;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -17,6 +18,11 @@ import java.util.List;
  */
 //TODO minim la DI la fiecare ri
 public class CoderUseCase {
+
+    /**
+     * File name
+     */
+    String fileName;
 
     /**
      * image header
@@ -35,6 +41,7 @@ public class CoderUseCase {
      * @throws IOException an exception
      */
     public CoderUseCase(File file) throws IOException {
+        this.fileName = file.getName();
         this.imageHeader = new ArrayList<>();
         int[][] imageValues = new int[512][512];
         BitReader bitReader = new BitReader(file);
@@ -141,6 +148,38 @@ public class CoderUseCase {
      */
     public void createRangeDetailsCorrespondingToRangeCoordinates(int xRange, int yRange) {
         this.coder.createRangeDetailsCorrespondingToRangeCoordinates(xRange, yRange);
+    }
+
+    /**
+     * save as fic file data about ranges details
+     *
+     * @param selectedDirectory directory file
+     * @throws IOException an exception
+     */
+    public void saveRangeDetailsAsFic(File selectedDirectory) throws IOException {
+        File file = new File(selectedDirectory.getPath() + File.separator + this.fileName + ".fic");
+        BitWriter bitWriter = new BitWriter(file);
+        for (int value : this.imageHeader) {
+            bitWriter.writeNBits(value, 8);
+        }
+
+        RangeDetails[][] rangeDetails = this.coder.getRangeDetails();
+        for (int i = 0; i < rangeDetails.length; i++) {
+            for (int j = 0; j < rangeDetails[i].length; j++) {
+                int xDomain = rangeDetails[i][j].getXDomain();
+                int yDomain = rangeDetails[i][j].getYDomain();
+                int izo = rangeDetails[i][j].getIzoType();
+                int scale = rangeDetails[i][j].getScale();
+                int offset = rangeDetails[i][j].getOffset();
+                bitWriter.writeNBits(xDomain, 6);
+                bitWriter.writeNBits(yDomain, 6);
+                bitWriter.writeNBits(izo, 3);
+                bitWriter.writeNBits(scale, 5);
+                bitWriter.writeNBits(offset, 7);
+            }
+        }
+
+        bitWriter.close();
     }
 }
 

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.h3_fractal_image_coder.mytools;
 
 import java.io.BufferedOutputStream;
@@ -42,7 +39,7 @@ public class BitWriter {
 
     public void writeNBits(int bits, int nr) throws IOException {
         for (int i = nr - 1; i >= 0; i--) {
-            int bit = (bits >>(nr-i-1)) & 1;
+            int bit = (bits >> (nr - i - 1)) & 1;
             writeBit(bit);
         }
     }

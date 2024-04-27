@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -175,14 +176,30 @@ public class AppController implements Initializable {
 
     /**
      * on btn save original image click
+     * @throws IOException an exception
      */
     @FXML
-    protected void onBtnSaveOriginalImageClick() {
+    protected void onBtnSaveOriginalImageClick() throws IOException {
         if (pbProgress.getProgress() != 1) {
             String title = "The process is not ready";
             String message = "The original image is still being processed";
             this.showDialog(title, message);
             return;
+        }
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select an Directory");
+
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H3_Fractal_image_coder");
+        directoryChooser.setInitialDirectory(defaultDirectory);
+
+        Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
+
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+        if (selectedDirectory != null) {
+            this.coderUseCase.saveRangeDetailsAsFic(selectedDirectory);
+            
         }
     }
 
