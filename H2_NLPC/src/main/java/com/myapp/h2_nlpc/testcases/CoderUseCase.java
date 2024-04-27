@@ -155,7 +155,6 @@ public class CoderUseCase {
      *
      * @return the min value, the max value
      */
-    //TODO ask if Coder-Decoder
     public int[] computeError() {
         int[] minMaxValues = new int[2];
         minMaxValues[0] = Integer.MAX_VALUE;

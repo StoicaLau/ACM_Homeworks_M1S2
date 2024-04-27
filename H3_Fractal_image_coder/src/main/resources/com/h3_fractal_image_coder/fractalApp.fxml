@@ -47,7 +47,57 @@
                <children>
                   <Label text="Values" StackPane.alignment="TOP_CENTER">
                      <StackPane.margin>
-                        <Insets top="20.0" />
+                        <Insets top="10.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label text="X Domain" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="100.0" left="20.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label text="Y Domain" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="50.0" left="20.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label text="Izo" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets left="20.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label text="Scale" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets left="20.0" top="50.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label text="Offset" StackPane.alignment="CENTER_LEFT">
+                     <StackPane.margin>
+                        <Insets left="20.0" top="100.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label fx:id="lblIzo" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="40.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label fx:id="lblYDomain" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets bottom="50.0" right="40.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label fx:id="lblXDomain" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets bottom="100.0" right="40.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label fx:id="lblScale" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="40.0" top="50.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <Label fx:id="lblOffset" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="40.0" top="100.0" />
                      </StackPane.margin>
                   </Label>
                </children>

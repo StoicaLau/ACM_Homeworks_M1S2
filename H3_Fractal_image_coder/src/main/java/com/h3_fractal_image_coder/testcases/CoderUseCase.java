@@ -1,11 +1,11 @@
 package com.h3_fractal_image_coder.testcases;
 
+import com.h3_fractal_image_coder.RangeDetails;
 import com.h3_fractal_image_coder.coderanddecoder.Coder;
 import com.h3_fractal_image_coder.mytools.BitReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import org.javatuples.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class CoderUseCase {
 
         for (int i = 0; i < imageValuesSize; i++) {
             int value = bitReader.readNBits(8);
-            imageValues[511-i / 512][i % 512] = value;
+            imageValues[511 - i / 512][i % 512] = value;
         }
 
         this.coder = new Coder(imageValues);
@@ -62,7 +62,7 @@ public class CoderUseCase {
      * @return an image
      */
     public WritableImage getRangeImage(int x, int y) {
-        int[][] rangeValues = this.coder.getRangeBlock(x,y).getValues();
+        int[][] rangeValues = this.coder.getRangeBlock(x, y).getValues();
 
 
         WritableImage writableImage = new WritableImage(80, 80);
@@ -86,7 +86,7 @@ public class CoderUseCase {
      * @return an image
      */
     public WritableImage getDomainImage(int x, int y) {
-        int[][] rangeValues = this.coder.get16By16DomainValues(x,y);
+        int[][] rangeValues = this.coder.get16By16DomainValues(x, y);
 
 
         WritableImage writableImage = new WritableImage(160, 160);
@@ -103,13 +103,14 @@ public class CoderUseCase {
     }
 
     /**
-     * get the coordinates of domain for specific range
+     * get the domain for specific range
+     *
      * @param xRange x coordinate of range
      * @param yRange y coordinate of range
-     * @return the coordinates
+     * @return the domain
      */
-    public Pair<Integer,Integer> getCoordinatesOfDomainForRange(int xRange,int yRange){
-        return this.coder.getCoordinatesOfDomainForRange(xRange,yRange);
+    public RangeDetails getRangeDetailsCorrespondingToRankCoordinates(int xRange, int yRange) {
+        return this.coder.getRangeDetailsCorrespondingToRangeCoordinates(xRange, yRange);
     }
 
 
@@ -124,7 +125,7 @@ public class CoderUseCase {
             for (int j = 0; j < 512; j++) {
                 int value = data[i][j];
                 Color grayColor = Color.gray(value / 255.0);
-                pixelWriter.setColor(j,  i, grayColor);
+                pixelWriter.setColor(j, i, grayColor);
             }
 
         }
@@ -133,12 +134,13 @@ public class CoderUseCase {
     }
 
     /**
-     * process error
+     * create range details corresponding to range coordinates
+     *
      * @param xRange x coordinates of range
      * @param yRange y coordinates of range
      */
-    public void processError(int xRange,int yRange){
-        this.coder.searchMinimumError(xRange,yRange);
+    public void createRangeDetailsCorrespondingToRangeCoordinates(int xRange, int yRange) {
+        this.coder.createRangeDetailsCorrespondingToRangeCoordinates(xRange, yRange);
     }
 }
 

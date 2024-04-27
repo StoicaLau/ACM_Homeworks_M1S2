@@ -34,6 +34,7 @@ public class Coder {
      * Number of isometrics
      */
     private static final int ISOMETRIC_LENGTH = 8;
+
     /**
      * block size
      */
@@ -70,6 +71,11 @@ public class Coder {
     private RangeDetails[][] rangeDetails;
 
 
+    /**
+     * Constructor
+     *
+     * @param imageValues image values
+     */
     public Coder(int[][] imageValues) {
         this.imageValues = imageValues;
         this.ranges = new Block[NUMBER_OF_RANGES][NUMBER_OF_RANGES];
@@ -77,13 +83,6 @@ public class Coder {
         this.rangeDetails = new RangeDetails[NUMBER_OF_RANGES][NUMBER_OF_RANGES];
 
         initializeRangeAndDomains();
-
-        for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
-            for (int j = 0; j < NUMBER_OF_DOMAINS; j++) {
-                System.out.println("range=" + ranges[i][j].toString());
-                System.out.println("domains=" + domains[i][j].toString());
-            }
-        }
     }
 
     public Block getRangeBlock(int x, int y) {
@@ -97,6 +96,46 @@ public class Coder {
      */
     public int[][] getImageValues() {
         return imageValues;
+    }
+
+    /**
+     * get the range details
+     *
+     * @return the range details
+     */
+    public RangeDetails[][] getRangeDetails() {
+        return rangeDetails;
+    }
+
+    /**
+     * get the range for specific range
+     *
+     * @param xRange x coordinate of range
+     * @param yRange y coordinate of range
+     * @return the domain
+     */
+    public RangeDetails getRangeDetailsCorrespondingToRangeCoordinates(int xRange, int yRange) {
+        return new RangeDetails(this.rangeDetails[yRange][xRange]);
+    }
+
+    /**
+     * get 16x16 matrix with domain values
+     *
+     * @param xDomain x coordinates to begin
+     * @param yDomain y coordinates to begin
+     * @return the image values,16 by 16 pixels
+     */
+    public int[][] get16By16DomainValues(int xDomain, int yDomain) {
+        int xBegin = xDomain * 8;
+        int yBegin = yDomain * 8;
+        int size = 16;
+        int[][] domainValues = new int[size][size];
+        for (int i = yBegin; i < yBegin + size; i++) {
+            for (int j = xBegin; j < xBegin + size; j++) {
+                domainValues[i - yBegin][j - xBegin] = this.imageValues[i][j];
+            }
+        }
+        return domainValues;
     }
 
     /**
@@ -139,7 +178,7 @@ public class Coder {
                 for (int yImage = yBegin; yImage < yBegin + 2 * BLOCK_SIZE; yImage += 2) {
                     for (int xImage = xBegin; xImage < xBegin + 2 * BLOCK_SIZE; xImage += 2) {
                         int result = this.imageValues[yImage][xImage] + this.imageValues[yImage + 1][xImage] + this.imageValues[yImage][xImage + 1] + this.imageValues[yImage + 1][xImage + 1];
-                        result=result/4;
+                        result = result / 4;
                         int xBlock = (xImage - xBegin) / 2;
                         int yBlock = (yImage - yBegin) / 2;
                         blockValues[yBlock][xBlock] = result;
@@ -156,13 +195,47 @@ public class Coder {
     }
 
     /**
+     * create range details corresponding to range coordinates
+     *
+     * @param xRange x range coordinate
+     * @param yRange y range coordinate
+     */
+    public void createRangeDetailsCorrespondingToRangeCoordinates(int xRange, int yRange) {
+        RangeDetails currentRangeDetails = null;
+        Double minimumError = Double.MAX_VALUE;
+
+        for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
+            for (int j = 0; j < NUMBER_OF_DOMAINS; j++) {
+                Block domain = this.domains[i][j];
+                for (int izo = 0; izo < ISOMETRIC_LENGTH; izo++) {
+                    Block isometricRange = this.getIsometricRangeBlock(xRange, yRange, izo);
+                    Triplet<Integer, Integer, Double> set = this.computeError(domain, isometricRange);
+                    if (set.getValue2() < minimumError) {
+                        minimumError = set.getValue2();
+
+                        int xDomain = j;
+                        int yDomain = i;
+                        int scale = set.getValue0();
+                        int offset = set.getValue1();
+                        currentRangeDetails = new RangeDetails(xDomain, yDomain, izo, scale, offset);
+                    }
+                }
+            }
+        }
+
+        this.rangeDetails[yRange][xRange] = new RangeDetails(currentRangeDetails);
+    }
+
+
+    /**
      * get isometric range block
-     * @param x x coordinate range block
-     * @param y y coordinate range block
-     * @param isometricType the isomatric type
+     *
+     * @param x             x coordinate range block
+     * @param y             y coordinate range block
+     * @param isometricType the isometric type
      * @return the isometric range value
      */
-    public Block getIsometricRangeBlock(int x, int y, int isometricType) {
+    private Block getIsometricRangeBlock(int x, int y, int isometricType) {
         Block rangeBlock = this.getRangeBlock(x, y);
         int size = rangeBlock.getSize();
         int sum = rangeBlock.getSum();
@@ -193,69 +266,29 @@ public class Coder {
      */
     //TODO cum stiu care izometrie e buna daca originala arata ca una din cele 7 sau invers ?
     private Pair<Integer, Integer> useIsometric(int x, int y, int indexType, int size) {
-        Pair<Integer, Integer> result = null;
-        switch (indexType) {
-            case 0:
-                result = new Pair<>(x, y);
-                break;
-            case 1:
-                result = new Pair<>(size - 1 - x, y);
-                break;
-            case 2:
-                result = new Pair<>(x, size - 1 - y);
-                break;
-            case 4://orig 3
-                result = new Pair<>(y, x);
-                break;
-            case 3://orig 4
-                result = new Pair<>(size - 1 - y, size - 1 - x);
-                break;
-            case 5:
-                result = new Pair<>(y, size - 1 - x);//test//original 7
-                break;
-            case 6:
-                result = new Pair<>(size - 1 - x, size - 1 - y);
-                break;
-            case 7:
-                result = new Pair<>(size - 1 - y, x);//test//original 5
+        return switch (indexType) {
+            case 0 -> new Pair<>(x, y);
+            case 1 -> new Pair<>(size - 1 - x, y);
+            case 2 -> new Pair<>(x, size - 1 - y);
+            case 4 ->//orig 3
+                    new Pair<>(y, x);
+            case 3 ->//orig 4
+                    new Pair<>(size - 1 - y, size - 1 - x);
+            case 5 -> new Pair<>(y, size - 1 - x);//test//original 7
+            case 6 -> new Pair<>(size - 1 - x, size - 1 - y);
+            case 7 -> new Pair<>(size - 1 - y, x);
+            default -> null;//test//original 5
 
-        }
-        return result;
+        };
     }
 
-
-    public void searchMinimumError(int xRange, int yRange) {
-        RangeDetails currentRangeDetails = null;
-        Double minimumError = Double.MAX_VALUE;
-
-        for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
-            for (int j = 0; j < NUMBER_OF_DOMAINS; j++) {
-                Block domain = this.domains[i][j];
-                for (int izo = 0; izo < ISOMETRIC_LENGTH; izo++) {
-                    Block isometricRange = this.getIsometricRangeBlock(xRange, yRange, izo);
-                    Triplet<Integer, Integer, Double> set = this.computeError(domain, isometricRange);
-                    if (set.getValue2() < minimumError) {
-                        minimumError = set.getValue2();
-//                        System.out.println("Result:"+xRange+" "+yRange+"izo"+izo+j+" "+i+set.getValue2());
-                        int xDomain = j;
-                        int yDomain = i;
-                        int scale = set.getValue0();
-                        int offset = set.getValue1();
-                        currentRangeDetails = new RangeDetails(xDomain, yDomain, izo, scale, offset);
-                    }
-                }
-            }
-        }
-
-        this.rangeDetails[yRange][xRange] = new RangeDetails(currentRangeDetails);
-    }
 
     /**
      * Compute error
      *
      * @param domain domain block
      * @param range  range block
-     * @return
+     * @return scale, offset ,error
      */
     private Triplet<Integer, Integer, Double> computeError(Block domain, Block range) {
         double rdSum = 0;
@@ -268,7 +301,7 @@ public class Coder {
         int sum1 = (int) Math.pow(BLOCK_SIZE, 2);
 
         double det = sum1 * domain.getSumSquared() - Math.pow(domain.getSum(), 2);
-        double alpha = det == 0.0 ? 0.0 : (double) (sum1 * rdSum - range.getSum() * domain.getSum()) / det;
+        double alpha = det == 0.0 ? 0.0 : (sum1 * rdSum - range.getSum() * domain.getSum()) / det;
 
         int scale = (int) (0.5 + (alpha + MAX_SCALE) / (2.0 * MAX_SCALE) * (1 << S_BITS));
 
@@ -281,14 +314,14 @@ public class Coder {
         }
 
         alpha = (double) scale / (double) (1 << S_BITS) * (2.0 * MAX_SCALE) - MAX_SCALE;
-        double beta = (double) (range.getSum() - alpha * domain.getSum()) / sum1;
+        double beta = (range.getSum() - alpha * domain.getSum()) / sum1;
 
         if (alpha > 0.0) {
             beta += alpha * GREY_LEVELS;
         }
 
         //TODO fabs?
-        int offset = (int) (0.5 + (double) beta / ((1.0 + Math.abs(alpha)) * GREY_LEVELS) * ((1 << O_BITS) - 1));
+        int offset = (int) (0.5 + beta / ((1.0 + Math.abs(alpha)) * GREY_LEVELS) * ((1 << O_BITS) - 1));
         if (offset < 0) {
             offset = 0;
         }
@@ -302,44 +335,7 @@ public class Coder {
         }
 
         //TODO /sum1?
-        double sqerr = (Double)(range.getSumSquared() + alpha * (alpha * domain.getSumSquared() - 2.0 * rdSum + 2.0 * beta * domain.getSum()) + beta * (beta * sum1 - 2.0 * range.getSum()));
-        return new Triplet<>(scale, offset, sqerr);
-
+        double sqErr = range.getSumSquared() + alpha * (alpha * domain.getSumSquared() - 2.0 * rdSum + 2.0 * beta * domain.getSum()) + beta * (beta * sum1 - 2.0 * range.getSum());
+        return new Triplet<>(scale, offset, sqErr);
     }
-
-    /**
-     * get the coordinates of domain for specific range
-     *
-     * @param xRange x coordinate of range
-     * @param yRange y coordinate of range
-     * @return the coordinates
-     */
-    public Pair<Integer, Integer> getCoordinatesOfDomainForRange(int xRange, int yRange) {
-        System.out.println("Range:" + xRange + ":" + yRange);
-        int xDomain = this.rangeDetails[yRange][xRange].getXDomain();
-        int yDomain = this.rangeDetails[yRange][xRange].getYDomain();
-        System.out.println("domain:" + xDomain + ":" + yDomain + "izo:" + this.rangeDetails[yRange][xRange].getIzoType());
-        return new Pair<>(xDomain, yDomain);
-    }
-
-    /**
-     * get 16x16 matrix with domain values
-     *
-     * @param xDomain x coordinates to begin
-     * @param yDomain y coordinates to begin
-     * @return
-     */
-    public int[][] get16By16DomainValues(int xDomain, int yDomain) {
-        int xBegin = xDomain * 8;
-        int yBegin = yDomain * 8;
-        int size = 16;
-        int[][] domainValues = new int[size][size];
-        for (int i = yBegin; i < yBegin + size; i++) {
-            for (int j = xBegin; j < xBegin + size; j++) {
-                domainValues[i - yBegin][j - xBegin] = this.imageValues[i][j];
-            }
-        }
-        return domainValues;
-    }
-
 }
