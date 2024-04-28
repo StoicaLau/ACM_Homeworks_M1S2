@@ -157,7 +157,7 @@ public class Coder {
                         int yBlock = yImage - yBegin;
                         blockValues[yBlock][xBlock] = this.imageValues[yImage][xImage];
                         sum += this.imageValues[yImage][xImage];
-                        sumSquared += Math.pow(this.imageValues[yImage][xImage], 2);
+                        sumSquared += this.imageValues[yImage][xImage]* this.imageValues[yImage][xImage];
                     }
 
                 }
@@ -183,7 +183,7 @@ public class Coder {
                         int yBlock = (yImage - yBegin) / 2;
                         blockValues[yBlock][xBlock] = result;
                         sum += result;
-                        sumSquared += Math.pow(result, 2);
+                        sumSquared += result * result;
                     }
 
                 }
@@ -298,9 +298,9 @@ public class Coder {
 
             }
         }
-        int sum1 = (int) Math.pow(BLOCK_SIZE, 2);
+        int sum1 =  BLOCK_SIZE*BLOCK_SIZE;
 
-        double det = sum1 * domain.getSumSquared() - Math.pow(domain.getSum(), 2);
+        double det = sum1 * domain.getSumSquared() - (domain.getSum()*domain.getSum());
         double alpha = det == 0.0 ? 0.0 : (sum1 * rdSum - range.getSum() * domain.getSum()) / det;
 
         int scale = (int) (0.5 + (alpha + MAX_SCALE) / (2.0 * MAX_SCALE) * (1 << S_BITS));

@@ -3,6 +3,7 @@ package com.h3_fractal_image_coder.controller;
 import com.h3_fractal_image_coder.RangeDetails;
 import com.h3_fractal_image_coder.testcases.CoderUseCase;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -26,6 +27,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AppController implements Initializable {
@@ -93,6 +95,11 @@ public class AppController implements Initializable {
     private CoderUseCase coderUseCase;
 
     /**
+     * Thread for  process
+     */
+    private Task processTask ;
+
+    /**
      * Used for preset some components
      */
     @Override
@@ -111,7 +118,13 @@ public class AppController implements Initializable {
         pOriginalImage.getChildren().add(domainFrame);
 
         this.progress = null;
-        this.executor = Executors.newFixedThreadPool(5);
+        this.executor = Executors.newFixedThreadPool(1);
+        this.processTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                return null;
+            }
+        };
 
     }
 
@@ -146,36 +159,85 @@ public class AppController implements Initializable {
         }
     }
 
+//    /**
+//     * Process event click
+//     */
+//    @FXML
+//    protected void onBtnProcessClick() {
+//        this.prepareInterfaceForProcessEvent();
+//        this.progress = new AtomicInteger(0);//atomic int good for threads
+//        this.executor = Executors.newFixedThreadPool(5);
+//
+//        for (int yRange = 0; yRange < NUMBER_OF_RANGES; yRange++) {
+//            for (int xRange = 0; xRange < NUMBER_OF_RANGES; xRange++) {
+//                final int finalXRange = xRange;
+//                final int finalYRange = yRange;
+//
+//                CompletableFuture.runAsync(() -> {
+//                    this.coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
+//                    int currentProgress = progress.incrementAndGet();
+//                    double currentProgressPercentage = (double) currentProgress / MAX_VALUE;
+//                    Platform.runLater(() -> pbProgress.setProgress(currentProgressPercentage));
+//                }, executor).exceptionally(ex -> {
+//                    ex.printStackTrace();
+//                    return null;
+//                });
+//
+////                executor.submit(() -> {
+////                    coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
+////                    int currentProgress = progress.incrementAndGet();
+////                    double currentProgressPercentage = (double) currentProgress / MAX_VALUE;
+////                    Platform.runLater(() -> pbProgress.setProgress(currentProgressPercentage));
+////                });
+//          }
+//
+//        }
+//
+//        executor.shutdown();
+//        this.iwOriginalImage.setOnMouseClicked(this::onMouseClickedOriginalImageEvent);
+//        this.btnSaveOriginalImage.setDisable(false);
+//    }
+
     /**
-     * Process event click
+     * //     * Process event click
+     * //
      */
     @FXML
     protected void onBtnProcessClick() {
         this.prepareInterfaceForProcessEvent();
-        AtomicInteger progress = new AtomicInteger(0);//atomic int good for threads
-        ExecutorService executor = Executors.newFixedThreadPool(5);
 
-        for (int yRange = 0; yRange < NUMBER_OF_RANGES; yRange++) {
-            for (int xRange = 0; xRange < NUMBER_OF_RANGES; xRange++) {
-                final int finalXRange = xRange;
-                final int finalYRange = yRange;
-
-                executor.submit(() -> {
-                    coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
-                    int currentProgress = progress.incrementAndGet();
-                    double currentProgressPercentage = (double) currentProgress / MAX_VALUE;
-                    Platform.runLater(() -> pbProgress.setProgress(currentProgressPercentage));
-                });
+        this.processTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                int progress = 0;
+                for (int yRange = 0; yRange < NUMBER_OF_RANGES; yRange++) {
+                    for (int xRange = 0; xRange < NUMBER_OF_RANGES; xRange++) {
+                        final int finalXRange = xRange;
+                        final int finalYRange = yRange;
+                        coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
+                        progress++;
+                        double currentProgressPercentage = (double) progress / MAX_VALUE;
+                        updateProgress(currentProgressPercentage, 1);
+                    }
+                }
+                return null;
             }
-        }
+        };
 
-        executor.shutdown();
+
+        pbProgress.progressProperty().bind(this.processTask.progressProperty());
+        Thread thread = new Thread(processTask);
+        thread.setDaemon(true);//secondary thread , daemon can be intrerupted when main thread is done
+        thread.start();
+
         this.iwOriginalImage.setOnMouseClicked(this::onMouseClickedOriginalImageEvent);
         this.btnSaveOriginalImage.setDisable(false);
     }
 
+
     /**
      * on btn save original image click
+     *
      * @throws IOException an exception
      */
     @FXML
@@ -199,7 +261,7 @@ public class AppController implements Initializable {
 
         if (selectedDirectory != null) {
             this.coderUseCase.saveRangeDetailsAsFic(selectedDirectory);
-            
+
         }
     }
 
@@ -277,8 +339,13 @@ public class AppController implements Initializable {
         this.lblScale.setText("");
         this.lblOffset.setText("");
 
+        this.pbProgress.progressProperty().unbind();
         this.pbProgress.setProgress(0);
+        this.processTask.cancel();
+
         this.executor.shutdownNow();
+        this.progress = new AtomicInteger(0);
+
 
     }
 
