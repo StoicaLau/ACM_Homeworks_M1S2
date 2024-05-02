@@ -4,19 +4,20 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.h3_fractal_image_coder.controller.AppController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.h3_fractal_image_coder.controller.AppController">
    <children>
-      <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="1200.0">
+      <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="1220.0">
          <children>
             <ImageView fx:id="iwDecodedImage" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
                <StackPane.margin>
-                  <Insets left="10.0" />
+                  <Insets left="10.0" right="10.0" />
                </StackPane.margin>
             </ImageView>
             <ProgressBar fx:id="pbProgress" prefHeight="18.0" prefWidth="488.0" progress="0.0" rotate="270.0" StackPane.alignment="CENTER" />
@@ -117,25 +118,42 @@
                </children></StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnLoadInitialImage" mnemonicParsing="false" text="Load initial image" />
+                  <Button fx:id="btnLoadInitialImage" mnemonicParsing="false" onAction="#onBtnLoadInitialImageClick" text="Load initial image" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets bottom="100.0" />
+                     </StackPane.margin></Button>
+                  <Label text="Steps" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets right="100.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <TextField fx:id="tfSteps" alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="40.0" text="1" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets left="100.0" />
+                     </StackPane.margin>
+                  </TextField>
+                  <Label fx:id="lblPSNR" alignment="CENTER" StackPane.alignment="CENTER">
+                     <StackPane.margin>
+                        <Insets top="100.0" />
+                     </StackPane.margin>
+                  </Label>
                </children>
             </StackPane>
             <StackPane prefHeight="200.0" prefWidth="228.0">
                <children>
-                  <Button fx:id="btnDecode" mnemonicParsing="false" prefWidth="60.0" text="Process" StackPane.alignment="CENTER" />
-                  <Button fx:id="btnLoadFic" mnemonicParsing="false" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
+                  <Button fx:id="btnDecode" disable="true" mnemonicParsing="false" onAction="#onBtnDecodeClick" prefWidth="60.0" text="Decode" StackPane.alignment="CENTER" />
+                  <Button fx:id="btnLoadFic" disable="true" mnemonicParsing="false" onAction="#onBtnLoadFicClick" prefWidth="60.0" text="Load" StackPane.alignment="CENTER">
                      <StackPane.margin>
                         <Insets bottom="100.0" />
                      </StackPane.margin>
                   </Button>
-                  <Button fx:id="btnSaveDecodedImage" mnemonicParsing="false" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
+                  <Button fx:id="btnSaveDecodedImage" disable="true" mnemonicParsing="false" onAction="#onBtnSaveDecodedImageClick" prefWidth="60.0" text="Save" StackPane.alignment="CENTER">
                      <StackPane.margin>
                         <Insets top="100.0" />
                      </StackPane.margin>
                   </Button>
                </children>
             </StackPane>
-            <Label text="Label" />
          </children>
       </HBox>
    </children>

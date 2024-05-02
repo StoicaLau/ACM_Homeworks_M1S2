@@ -1,15 +1,13 @@
 package com.h3_fractal_image_coder.controller;
 
 import com.h3_fractal_image_coder.RangeDetails;
-import com.h3_fractal_image_coder.testcases.CoderUseCase;
-import javafx.application.Platform;
+import com.h3_fractal_image_coder.coderanddecoder.Tools;
+import com.h3_fractal_image_coder.usecases.CoderUseCase;
+import com.h3_fractal_image_coder.usecases.DecoderUseCase;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -25,30 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class AppController implements Initializable {
 
-    /**
-     * number of ranges
-     */
-    private static final int NUMBER_OF_RANGES = 64;
-
-    private static final int MAX_VALUE = 4096;
     @FXML
     ProgressBar pbProgress;
-    /**
-     * current state of progress barr
-     * atomic integer good for threads
-     */
-    AtomicInteger progress;
-    /**
-     * executor service
-     */
-    ExecutorService executor;
     //Buttons
     @FXML
     private Button btnLoadOriginalImage;
@@ -56,6 +35,14 @@ public class AppController implements Initializable {
     private Button btnProcess;
     @FXML
     private Button btnSaveOriginalImage;
+    @FXML
+    private Button btnLoadInitialImage;
+    @FXML
+    private Button btnLoadFic;
+    @FXML
+    private Button btnDecode;
+    @FXML
+    private Button btnSaveDecodedImage;
     //Images
     @FXML
     private ImageView iwOriginalImage;
@@ -65,7 +52,6 @@ public class AppController implements Initializable {
     private ImageView iwDomainBlock;
     @FXML
     private ImageView iwDecodedImage;
-
     //Labels
     @FXML
     private Label lblXDomain;
@@ -77,10 +63,13 @@ public class AppController implements Initializable {
     private Label lblScale;
     @FXML
     private Label lblOffset;
-
+    @FXML
+    private Label lblPSNR;
     //Others
     @FXML
     private Pane pOriginalImage;
+    @FXML
+    private TextField tfSteps;
     /**
      * range frame
      */
@@ -95,9 +84,15 @@ public class AppController implements Initializable {
     private CoderUseCase coderUseCase;
 
     /**
+     * decoder test case
+     */
+    private DecoderUseCase decoderUseCase;
+
+    /**
      * Thread for  process
      */
-    private Task processTask ;
+    private Task processTask;
+
 
     /**
      * Used for preset some components
@@ -117,8 +112,6 @@ public class AppController implements Initializable {
         pOriginalImage.getChildren().add(rangeFrame);
         pOriginalImage.getChildren().add(domainFrame);
 
-        this.progress = null;
-        this.executor = Executors.newFixedThreadPool(1);
         this.processTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -144,7 +137,7 @@ public class AppController implements Initializable {
 
         File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H3_Fractal_image_coder\\Images512");
         fileChooser.setInitialDirectory(defaultDirectory);
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Imagini BMP (*.bmp)", "*.bmp");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("BMP (*.bmp)", "*.bmp");
         fileChooser.getExtensionFilters().add(extFilter);
 
         Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
@@ -155,68 +148,28 @@ public class AppController implements Initializable {
             this.iwOriginalImage.setImage(image);
             this.coderUseCase = new CoderUseCase(selectedFile);
             this.changeInterfaceAfterLoadOriginalImageEvent();
-            this.drawImage();
+
         }
     }
 
-//    /**
-//     * Process event click
-//     */
-//    @FXML
-//    protected void onBtnProcessClick() {
-//        this.prepareInterfaceForProcessEvent();
-//        this.progress = new AtomicInteger(0);//atomic int good for threads
-//        this.executor = Executors.newFixedThreadPool(5);
-//
-//        for (int yRange = 0; yRange < NUMBER_OF_RANGES; yRange++) {
-//            for (int xRange = 0; xRange < NUMBER_OF_RANGES; xRange++) {
-//                final int finalXRange = xRange;
-//                final int finalYRange = yRange;
-//
-//                CompletableFuture.runAsync(() -> {
-//                    this.coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
-//                    int currentProgress = progress.incrementAndGet();
-//                    double currentProgressPercentage = (double) currentProgress / MAX_VALUE;
-//                    Platform.runLater(() -> pbProgress.setProgress(currentProgressPercentage));
-//                }, executor).exceptionally(ex -> {
-//                    ex.printStackTrace();
-//                    return null;
-//                });
-//
-////                executor.submit(() -> {
-////                    coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
-////                    int currentProgress = progress.incrementAndGet();
-////                    double currentProgressPercentage = (double) currentProgress / MAX_VALUE;
-////                    Platform.runLater(() -> pbProgress.setProgress(currentProgressPercentage));
-////                });
-//          }
-//
-//        }
-//
-//        executor.shutdown();
-//        this.iwOriginalImage.setOnMouseClicked(this::onMouseClickedOriginalImageEvent);
-//        this.btnSaveOriginalImage.setDisable(false);
-//    }
-
     /**
-     * //     * Process event click
-     * //
+     * Process event click
      */
     @FXML
     protected void onBtnProcessClick() {
         this.prepareInterfaceForProcessEvent();
-
+        int maxValue = 4096;
         this.processTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 int progress = 0;
-                for (int yRange = 0; yRange < NUMBER_OF_RANGES; yRange++) {
-                    for (int xRange = 0; xRange < NUMBER_OF_RANGES; xRange++) {
+                for (int yRange = 0; yRange < Tools.NUMBER_OF_RANGES; yRange++) {
+                    for (int xRange = 0; xRange < Tools.NUMBER_OF_RANGES; xRange++) {
                         final int finalXRange = xRange;
                         final int finalYRange = yRange;
                         coderUseCase.createRangeDetailsCorrespondingToRangeCoordinates(finalXRange, finalYRange);
                         progress++;
-                        double currentProgressPercentage = (double) progress / MAX_VALUE;
+                        double currentProgressPercentage = (double) progress / maxValue;
                         updateProgress(currentProgressPercentage, 1);
                     }
                 }
@@ -262,6 +215,134 @@ public class AppController implements Initializable {
         if (selectedDirectory != null) {
             this.coderUseCase.saveRangeDetailsAsFic(selectedDirectory);
 
+        }
+    }
+
+    /**
+     * on btn load initial image click event
+     *
+     * @throws IOException an exception
+     */
+    @FXML
+    protected void onBtnLoadInitialImageClick() throws IOException {
+        this.changeInterfaceBeforeLoadInitialImageEvent();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select an bmp image");
+
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H3_Fractal_image_coder\\Images512");
+        fileChooser.setInitialDirectory(defaultDirectory);
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("BMP (*.bmp)", "*.bmp");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            this.decoderUseCase = new DecoderUseCase(selectedFile);
+            this.changeInterfaceAfterLoadInitialImageEvent();
+        }
+    }
+
+    /**
+     * on btn  load fic click event
+     *
+     * @throws IOException an exception
+     */
+    @FXML
+    protected void onBtnLoadFicClick() throws IOException {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select an bmp image");
+
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H3_Fractal_image_coder\\Images512");
+        fileChooser.setInitialDirectory(defaultDirectory);
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(" FIC File (*.fic)", "*.fic");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            this.decoderUseCase.getRangesDetailsFromFile(selectedFile);
+
+            this.tfSteps.setText("1");
+            this.lblPSNR.setText("");
+            this.btnDecode.setDisable(false);
+            this.btnSaveDecodedImage.setDisable(true);
+
+        }
+    }
+
+    /**
+     * on btn decode click event
+     *
+     * @throws IOException an exception
+     */
+    @FXML
+    protected void onBtnDecodeClick() throws IOException {
+        String stepsString = this.tfSteps.getText();
+        if (!stepsString.equals("")) {
+            int steps = -1;
+            try {
+                steps = Integer.parseInt(stepsString);
+            } catch (NumberFormatException e) {
+                String title = "Wrong steps parameter";
+                String message = "The steps parameter is not a number!";
+                this.showDialog(title, message);
+                return;
+            }
+            if (steps <= 0) {
+                String title = "Wrong steps parameter";
+                String message = "The steps parameter is negative or zero.";
+                this.showDialog(title, message);
+                return;
+            }
+
+            for (int i = 0; i < steps; i++) {
+                this.decoderUseCase.decode();
+
+            }
+            this.drawDecodedImage();
+            String message = "";
+            if (this.coderUseCase == null)
+                message = "The original image is not loaded";
+            else {
+                double psnr = this.decoderUseCase.computePSNR(this.coderUseCase.getOriginalImageValues());
+                message = "PSNR= " + psnr;
+            }
+            this.lblPSNR.setText(message);
+            this.btnSaveDecodedImage.setDisable(false);
+
+        } else {
+            String title = "Wrong steps parameter";
+            String message = "The steps parameter is null!";
+            this.showDialog(title, message);
+        }
+
+    }
+
+    /**
+     * on btn save decoded image click event
+     *
+     * @throws IOException an exception
+     */
+    @FXML
+    protected void onBtnSaveDecodedImageClick() throws IOException {
+
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select an Directory");
+
+        File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H3_Fractal_image_coder");
+        directoryChooser.setInitialDirectory(defaultDirectory);
+
+        Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
+
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+        if (selectedDirectory != null) {
+            this.decoderUseCase.saveDecodeImage(selectedDirectory);
         }
     }
 
@@ -343,11 +424,8 @@ public class AppController implements Initializable {
         this.pbProgress.setProgress(0);
         this.processTask.cancel();
 
-        this.executor.shutdownNow();
-        this.progress = new AtomicInteger(0);
-
-
     }
+
 
     /**
      * change the interface after load original image Event
@@ -357,9 +435,35 @@ public class AppController implements Initializable {
         this.btnProcess.setDisable(false);
     }
 
+    /**
+     * change interface after load initial image
+     */
+    private void changeInterfaceBeforeLoadInitialImageEvent() {
+        this.tfSteps.setText("");
+        this.lblPSNR.setText("");
+        this.tfSteps.setDisable(true);
+        this.btnLoadFic.setDisable(true);
+        this.btnDecode.setDisable(true);
+        this.btnSaveDecodedImage.setDisable(true);
+    }
 
-    public void drawImage() {
-        WritableImage writableImage = this.coderUseCase.writeImage();
+    /**
+     * change interface after load initial image
+     */
+    private void changeInterfaceAfterLoadInitialImageEvent() {
+        this.tfSteps.setText("1");
+        this.tfSteps.setDisable(false);
+        this.btnLoadFic.setDisable(false);
+        this.drawDecodedImage();
+
+    }
+
+
+    /**
+     * draw decoded Image
+     */
+    public void drawDecodedImage() {
+        WritableImage writableImage = this.decoderUseCase.createDecodedImage();
         this.iwDecodedImage.setImage(writableImage);
     }
 

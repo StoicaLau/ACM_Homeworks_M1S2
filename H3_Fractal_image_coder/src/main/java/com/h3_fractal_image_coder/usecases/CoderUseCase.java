@@ -1,4 +1,4 @@
-package com.h3_fractal_image_coder.testcases;
+package com.h3_fractal_image_coder.usecases;
 
 import com.h3_fractal_image_coder.RangeDetails;
 import com.h3_fractal_image_coder.coderanddecoder.Coder;
@@ -20,14 +20,16 @@ import java.util.List;
 public class CoderUseCase {
 
     /**
+     * image header
+     */
+    private List<Integer> imageHeader;
+
+    /**
      * File name
      */
     String fileName;
 
-    /**
-     * image header
-     */
-    private List<Integer> imageHeader;
+
 
     /**
      * the coder
@@ -120,26 +122,6 @@ public class CoderUseCase {
         return this.coder.getRangeDetailsCorrespondingToRangeCoordinates(xRange, yRange);
     }
 
-
-    public WritableImage writeImage() {
-        int[][] data = this.coder.getImageValues();
-
-
-        WritableImage writableImage = new WritableImage(512, 512);
-        PixelWriter pixelWriter = writableImage.getPixelWriter();
-
-        for (int i = 0; i < 512; i++) {
-            for (int j = 0; j < 512; j++) {
-                int value = data[i][j];
-                Color grayColor = Color.gray(value / 255.0);
-                pixelWriter.setColor(j, i, grayColor);
-            }
-
-        }
-
-        return writableImage;
-    }
-
     /**
      * create range details corresponding to range coordinates
      *
@@ -180,6 +162,13 @@ public class CoderUseCase {
         }
 
         bitWriter.close();
+    }
+
+    /**
+     * get original image values
+     */
+    public int[][] getOriginalImageValues() {
+        return this.coder.getImageValues();
     }
 }
 

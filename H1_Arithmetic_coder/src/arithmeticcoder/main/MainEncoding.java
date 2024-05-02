@@ -29,6 +29,7 @@ public class MainEncoding {
                 break;
 
             int symbol = ch;
+
             arithmeticEncoding.encodeSymbol(symbol, adaptiveModel.getSums());
             adaptiveModel.updateModel(symbol);
         }

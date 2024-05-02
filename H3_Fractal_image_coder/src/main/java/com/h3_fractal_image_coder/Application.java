@@ -5,13 +5,15 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-//TODO
+//TODO de cate ori dau decode am limita?
+//TODO am facut bine psnr?
+
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("fractalApp.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Hello!");
+        stage.setTitle("Fractal App");
         stage.setScene(scene);
         stage.show();
     }
