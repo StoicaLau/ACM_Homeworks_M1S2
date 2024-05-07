@@ -15,11 +15,11 @@ public class Main {
     public static final String INPUT_FILE_BIN = "test.bin";
     public static final String OUTPUT_FILE_BIN = "test_output.bin";
     public static String PATH = "C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H1_Arithmetic_coder\\out";
-    public static final String INPUT_FILE = PATH + "\\" +INPUT_FILE_BIN;
+    public static final String INPUT_FILE = PATH + "\\" +INPUT_FILE_EXE;
 
     public static final String AUX_FILE = PATH + "\\" + "test_aux.bin";
 
-    public static final String OUTPUT_FILE = PATH + "\\" + OUTPUT_FILE_BIN;
+    public static final String OUTPUT_FILE = PATH + "\\" + OUTPUT_FILE_EXE;
 
 
     public static void main(String[] args) throws IOException {

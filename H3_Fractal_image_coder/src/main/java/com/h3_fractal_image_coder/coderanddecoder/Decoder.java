@@ -56,7 +56,7 @@ public class Decoder {
 
         int headerInfoSize = 1078;
         for (int i = 0; i < headerInfoSize; i++) {
-          bitReader.readNBits(8);
+            bitReader.readNBits(8);
         }
 
         for (int i = 0; i < rangeDetails.length; i++) {
