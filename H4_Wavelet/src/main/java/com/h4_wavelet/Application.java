@@ -6,6 +6,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+//TODO trebuie cum va sa imi dau seama unde este ll cand incarc iamginea?
+//TODO era vorba de o aproximare?
+
+//TODO fixare iamgini
+
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
