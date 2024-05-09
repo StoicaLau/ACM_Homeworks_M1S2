@@ -16,34 +16,40 @@ import org.javatuples.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
 
+    /**
+     * previous levels for horizontal
+     */
+    List<Integer> previousLevelsH;
+    /**
+     * previous Levels for vertical
+     */
+    List<Integer> previousLevelsV;
     //Labels
     @FXML
     private Label lblMin;
     @FXML
     private Label lblMax;
-
     //Images
     @FXML
     private ImageView iwOriginalImage;
-
     @FXML
     private ImageView iwWaveletImage;
-
     //Text Fields
     @FXML
     private TextField tfScale;
-
     @FXML
     private TextField tfOffset;
     @FXML
     private TextField tfX;
     @FXML
     private TextField tfY;
-
     //Buttons
     @FXML
     private Button btnLoadOriginalImage;
@@ -53,8 +59,6 @@ public class AppController implements Initializable {
     private Button btnRefresh;
     @FXML
     private Button btnComputeError;
-
-
     //Analysis Buttons
     @FXML
     private Button btnAnH1;
@@ -76,7 +80,6 @@ public class AppController implements Initializable {
     private Button btnAnH5;
     @FXML
     private Button btnAnV5;
-
     //Synthesis Buttons
     @FXML
     private Button btnSyH1;
@@ -98,18 +101,14 @@ public class AppController implements Initializable {
     private Button btnSyH5;
     @FXML
     private Button btnSyV5;
-
     /**
      * current level on horizontal
      */
     private int currentLevelH;
-
     /**
      * current level on vertical
      */
     private int currentLevelV;
-
-
     /**
      * backend of the app
      */
@@ -121,9 +120,8 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.setDisableAnalysisAndSynthesisButtons(true);
+        this.restartLevels();
 
-        this.currentLevelH = 0;
-        this.currentLevelV = 0;
 
         this.btnAnH1.setOnAction(event -> {
             try {
@@ -292,8 +290,7 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnLoadOriginalImageClick() throws IOException {
-        this.currentLevelH = 0;
-        this.currentLevelV = 0;
+        this.restartLevels();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an bmp image");
 
@@ -324,12 +321,10 @@ public class AppController implements Initializable {
 
     /**
      * on btn load wavelet image click event
-     *
      */
     @FXML
     protected void onBtnLoadWaveletImageClick() {
-        this.currentLevelH = 0;
-        this.currentLevelV = 0;
+        this.restartLevels();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an bmp image");
 
@@ -350,8 +345,8 @@ public class AppController implements Initializable {
             String fileName = selectedFile.getName();
             int hIndex = fileName.lastIndexOf("H");
             int vIndex = fileName.lastIndexOf("V");
-            this.currentLevelH = Integer.parseInt(String.valueOf(fileName.charAt(hIndex+1)));
-            this.currentLevelV = Integer.parseInt(String.valueOf(fileName.charAt(vIndex+1)));
+            this.currentLevelH = Integer.parseInt(String.valueOf(fileName.charAt(hIndex + 1)));
+            this.currentLevelV = Integer.parseInt(String.valueOf(fileName.charAt(vIndex + 1)));
 
             this.drawWaveletImage();
 
@@ -364,7 +359,6 @@ public class AppController implements Initializable {
 
     /**
      * on btn save wavelet image click event
-     *
      */
     @FXML
     protected void onBtnSaveWaveletImageClick() {
@@ -396,9 +390,11 @@ public class AppController implements Initializable {
     protected void onBtnAnClick(int level, String type) throws IOException {
         if (type.equals("horizontal")) {
             this.currentLevelH = level;
+            this.previousLevelsH.add(level);
             this.backend.analyzeHorizontal(this.currentLevelH);
         } else if (type.equals("vertical")) {
             this.currentLevelV = level;
+            this.previousLevelsV.add(level);
             this.backend.analyzeVertical(this.currentLevelV);
         }
         this.drawWaveletImage();
@@ -413,11 +409,22 @@ public class AppController implements Initializable {
     @FXML
     protected void onBtnSyClick(int level, String type) throws IOException {
         if (type.equals("horizontal")) {
-            this.currentLevelH = level - 1;
-            this.backend.synthesizeHorizontal(this.currentLevelH);
+            int length = this.previousLevelsH.size();
+            if (length != 1) {
+                this.previousLevelsH.remove(length - 1);
+                length = this.previousLevelsH.size();
+            }
+
+            this.currentLevelH = this.previousLevelsH.get(length - 1);
+            this.backend.synthesizeHorizontal(level-1);
         } else if (type.equals("vertical")) {
-            this.currentLevelV = level - 1;
-            this.backend.synthesizeVertical(this.currentLevelV);
+            int length = this.previousLevelsV.size();
+            if (length != 1) {
+                this.previousLevelsV.remove(length - 1);
+                length = this.previousLevelsV.size();
+            }
+            this.currentLevelV = this.previousLevelsV.get(length - 1);
+            this.backend.synthesizeVertical(level-1);
         }
 
         this.drawWaveletImage();
@@ -438,9 +445,11 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnComputeErrorClick() {
+        DecimalFormat format = new DecimalFormat("#.###");
+
         Pair<Double, Double> result = this.backend.computeError();
-        this.lblMin.setText("Min= " + result.getValue0());
-        this.lblMax.setText("Max= " + result.getValue1());
+        this.lblMin.setText("Min= " + format.format(result.getValue0()));
+        this.lblMax.setText("Max= " + format.format(result.getValue1()));
     }
 
 
@@ -536,5 +545,18 @@ public class AppController implements Initializable {
         this.btnSyV3.setDisable(disable);
         this.btnSyV4.setDisable(disable);
         this.btnSyV5.setDisable(disable);
+    }
+
+    /**
+     * restart the levels
+     */
+    private void restartLevels() {
+        this.previousLevelsH = new LinkedList<>();
+        this.previousLevelsV = new LinkedList<>();
+        this.currentLevelH = 0;
+        this.currentLevelV = 0;
+
+        this.previousLevelsH.add(this.currentLevelH);
+        this.previousLevelsV.add(this.currentLevelV);
     }
 }

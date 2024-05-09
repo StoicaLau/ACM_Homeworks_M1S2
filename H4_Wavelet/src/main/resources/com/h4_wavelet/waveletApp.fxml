@@ -77,7 +77,7 @@
                                         <Insets bottom="110.0" right="20.0" />
                                     </StackPane.margin>
                                 </TextField>
-                                <TextField fx:id="tfOffset" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="50.0" text="128" StackPane.alignment="CENTER_RIGHT">
+                                <TextField fx:id="tfOffset" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="50.0" text="0" StackPane.alignment="CENTER_RIGHT">
                                     <StackPane.margin>
                                         <Insets bottom="50.0" right="20.0" />
                                     </StackPane.margin>
