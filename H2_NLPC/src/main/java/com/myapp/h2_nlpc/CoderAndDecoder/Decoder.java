@@ -80,15 +80,9 @@ public class Decoder {
         this.saveMode = CoderAndDecoderTools.SAVE_MODE[saveModeIndex];
 
         switch (this.saveMode) {
-            case "Fixed 9b":
-                this.setQuantizedErrorValuesFromFixedSaveMode(bitReader);
-                break;
-            case "Table":
-                this.setQuantizedErrorValuesFromTableSaveMode(bitReader);
-                break;
-            case "Arithmetic":
-                this.setQuantizedErrorValuesFromArithmeticSaveMode(bitReader);
-                break;
+            case "Fixed 9b" -> this.setQuantizedErrorValuesFromFixedSaveMode(bitReader);
+            case "Table" -> this.setQuantizedErrorValuesFromTableSaveMode(bitReader);
+            case "Arithmetic" -> this.setQuantizedErrorValuesFromArithmeticSaveMode(bitReader);
         }
         bitReader.close();
 
@@ -267,6 +261,7 @@ public class Decoder {
             }
         }
     }
+
 
 
 }

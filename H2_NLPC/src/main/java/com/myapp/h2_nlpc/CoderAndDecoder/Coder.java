@@ -79,14 +79,6 @@ public class Coder {
         return this.quantizedErrorValues;
     }
 
-    /**
-     * get dequantized error values
-     *
-     * @return the quantized error values
-     */
-    public int[][] getDequantizedErrorValues() {
-        return this.dequantizedErrorValues;
-    }
 
     /**
      * get decoded  values
@@ -127,7 +119,7 @@ public class Coder {
         else {
             for (int i = 0; i < 256; i++) {
                 for (int j = 0; j < 256; j++) {
-                    predictedValues[i][j]=CoderAndDecoderTools.predictValue(i,j,type,this.decodedValues);
+                    predictedValues[i][j] = CoderAndDecoderTools.predictValue(i, j, type, this.decodedValues);
                     this.predictedValues[i][j] = CoderAndDecoderTools.normalizeValue(this.predictedValues[i][j]);
                     this.errorValues[i][j] = this.imageValues[i][j] - this.predictedValues[i][j];
                     this.quantizedErrorValues[i][j] = CoderAndDecoderTools.quantizeError(this.errorValues[i][j], k);

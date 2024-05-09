@@ -44,7 +44,7 @@ public class DecoderUseCase {
      * @param file the nlc file
      * @throws IOException an exception
      */
-    public void initDecoder(File file) throws IOException {
+    public DecoderUseCase(File file) throws IOException {
         this.fileName = file.getName();
         int index = this.fileName.indexOf(".bmp");
         this.fileName = this.fileName.substring(0, index + 4);
@@ -86,7 +86,7 @@ public class DecoderUseCase {
      * //     * @throws IOException an exception
      * //
      */
-    public WritableImage startDecoding() throws IOException {
+    public WritableImage startDecoding() {
         this.decoder.decodeImage();
 
         this.predictorType = this.decoder.getPredictorType();
@@ -130,7 +130,7 @@ public class DecoderUseCase {
     /**
      * save the decoded image as bmp
      *
-     * @param selectedDirectory
+     * @param selectedDirectory the selected directory
      */
     public void saveDecodedFile(File selectedDirectory) throws IOException {
         String imageName = this.fileName.replace(".bmp", "").trim();
@@ -161,6 +161,15 @@ public class DecoderUseCase {
 
         }
         bitWriter.close();
+    }
+
+    /**
+     * get decoded values
+     *
+     * @return the decoded values
+     */
+    public int[][] getDecodedValues() {
+        return this.decoder.getDecodedValues();
     }
 
 

@@ -10,7 +10,6 @@ import java.io.IOException;
 public class ArithmeticDecoding {
     private long value;
     private long low, high;
-    //TODO faci masca pe 32 de biti
 
     /**
      * bit reader
@@ -35,7 +34,7 @@ public class ArithmeticDecoding {
      *
      * @param sums cumulative frequent
      * @return the decoded symbol
-     * @throws IOException
+     * @throws IOException an exception
      */
     public int decodeSymbol(int[] sums) throws IOException {
 
@@ -43,12 +42,10 @@ public class ArithmeticDecoding {
         int noOfSymbols = sums.length - 1;
         int cum = (int) ((((value - low) + 1) * sums[noOfSymbols] - 1) / range);
         int symbol;
-        //System.out.println("sums = " +cum);
 
         for (symbol = noOfSymbols-1; sums[symbol] > cum; symbol--) ;
 
-//        System.out.println((char)symbol+":"+symbol+" cum: "+cum+"sums: "+sums[noOfSymbols] +" high:"+high+"low: "+low);
-        //System.out.println(symbol);
+
         high = low + ((range * sums[symbol + 1]) / sums[noOfSymbols] - 1);
         low = low + (range * sums[symbol]) / (sums[noOfSymbols]);
 

@@ -153,16 +153,17 @@ public class CoderUseCase {
     /**
      * compute min and max error( min max of Original-Decode)
      *
+     * @param decodedValues decoded values
      * @return the min value, the max value
      */
-    public int[] computeError() {
+    public int[] computeError(int[][] decodedValues) {
         int[] minMaxValues = new int[2];
         minMaxValues[0] = Integer.MAX_VALUE;
         minMaxValues[1] = Integer.MIN_VALUE;
 
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 256; j++) {
-                int result = this.coder.getImageValues()[i][j] - this.coder.getDecodedValues()[i][j];
+                int result = this.coder.getImageValues()[i][j] - decodedValues[i][j];
                 minMaxValues[0] = Math.min(minMaxValues[0], result);
                 minMaxValues[1] = Math.max(minMaxValues[1], result);
             }
@@ -218,13 +219,10 @@ public class CoderUseCase {
         bitWriter.writeNBits(saveModeIndex, 8);
 
 
-        if (saveMode.equals("Fixed 9b")) {
-            this.saveAsFixed9b(bitWriter);
-
-        } else if (saveMode.equals("Table")) {
-            this.saveAsTable(bitWriter);
-        } else if (saveMode.equals("Arithmetic")) {
-            this.saveAsArithmetic(bitWriter);
+        switch (saveMode) {
+            case "Fixed 9b" -> this.saveAsFixed9b(bitWriter);
+            case "Table" -> this.saveAsTable(bitWriter);
+            case "Arithmetic" -> this.saveAsArithmetic(bitWriter);
         }
 
         bitWriter.close();
@@ -258,7 +256,7 @@ public class CoderUseCase {
      * save as coordinates of the table
      * send line, index;
      *
-     * @param bitWriter
+     * @param bitWriter the bit writer
      */
     private void saveAsTable(BitWriter bitWriter) throws IOException {
         int[][] data = this.coder.getQuantizedErrorValues();
@@ -268,7 +266,7 @@ public class CoderUseCase {
                     bitWriter.writeBit(0);
                     bitWriter.writeBit(0);
                 } else {
-                    int line = 0;
+                    int line;
                     for (line = 0; Math.pow(2, line) <= Math.abs(data[i][j]); line++) ;
 
                     int kLine = line;
@@ -276,7 +274,7 @@ public class CoderUseCase {
                         bitWriter.writeBit(1);
                     }
                     bitWriter.writeBit(0);
-                    int index = 0;
+                    int index;
                     if (data[i][j] > 0) {
                         index = data[i][j];
                     } else {

@@ -92,31 +92,15 @@ public class CoderAndDecoderTools {
             int b = decodedValues[i - 1][j];
             int c = decodedValues[i - 1][j - 1];
             switch (type) {
-                case "A":
-                    predictedValue = a;
-                    break;
-                case "B":
-                    predictedValue = b;
-                    break;
-                case "C":
-                    predictedValue = c;
-                    break;
-                case "A+(B-C)/2":
-                    predictedValue = a + (b - c) / 2;
-                    break;
-                case "A+B-C":
-                    predictedValue = a + b - c;
-                    break;
-                case "(A+B-C)/2":
-                    predictedValue = (a + b - c) / 2;
-                    break;
-                case "B+(A-C)/2":
-                    predictedValue = b + (a - c) / 2;
-                    break;
-                case "(A+B)/2":
-                    predictedValue = (a + b) / 2;
-                    break;
-                case "JPEGLS":
+                case "A" -> predictedValue = a;
+                case "B" -> predictedValue = b;
+                case "C" -> predictedValue = c;
+                case "A+(B-C)/2" -> predictedValue = a + (b - c) / 2;
+                case "A+B-C" -> predictedValue = a + b - c;
+                case "(A+B-C)/2" -> predictedValue = (a + b - c) / 2;
+                case "B+(A-C)/2" -> predictedValue = b + (a - c) / 2;
+                case "(A+B)/2" -> predictedValue = (a + b) / 2;
+                case "JPEGLS" -> {
                     if (c >= Math.max(a, b))
                         predictedValue = Math.min(a, b);
                     else if (c <= Math.min(a, b)) {
@@ -124,7 +108,7 @@ public class CoderAndDecoderTools {
                     } else {
                         predictedValue = a + b - c;
                     }
-                    break;
+                }
             }
         }
 

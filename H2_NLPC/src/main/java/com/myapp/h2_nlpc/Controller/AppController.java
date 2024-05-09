@@ -112,16 +112,26 @@ public class AppController implements Initializable {
      */
     private DecoderUseCase decoderUseCase;
 
+    /**
+     * if the original image exist
+     */
+    private boolean isOriginalImage;
+
+    /**
+     * if the decoded image exist
+     */
+    private boolean isDecodedImage;
+
 
     /**
      * Used for preset some components
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.decoderUseCase = new DecoderUseCase();
+        this.isDecodedImage = false;
+        this.isOriginalImage = false;
         this.cbHistogramSource.valueProperty().addListener((observable, oldValue, newValue) -> this.refreshHistogram());
         tfRescaling.setOnAction(event -> this.refreshHistogram());
-
 
     }
 
@@ -272,7 +282,7 @@ public class AppController implements Initializable {
         File defaultDirectory = new File("C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H2_NLPC\\lab_NL_PRED");
         fileChooser.setInitialDirectory(defaultDirectory);
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Imagini BMP (*.bmp)", "*.bmp");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("BMP Image (*.bmp)", "*.bmp");
         fileChooser.getExtensionFilters().add(extFilter);
         Stage stage = (Stage) this.btnLoadOriginalImage.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
@@ -282,6 +292,11 @@ public class AppController implements Initializable {
             this.iwOriginalImage.setImage(image);
             this.coderUseCase = new CoderUseCase(selectedFile);
             this.changeInterfaceAfterLoadOriginalImageEvent();
+
+            this.isOriginalImage = true;
+            if (this.isDecodedImage) {
+                this.btnComputeError.setDisable(false);
+            }
         }
 
     }
@@ -294,7 +309,7 @@ public class AppController implements Initializable {
     protected void onBtnEncodeClick() {
         String kString = this.tfK.getText();
         if (!kString.equals("")) {
-            int k = -1;
+            int k;
             try {
                 k = Integer.parseInt(kString);
             } catch (NumberFormatException e) {
@@ -353,8 +368,10 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnLoadQuantizedErrorClick() throws IOException {
-
-
+        this.isDecodedImage = false;
+        this.btnComputeError.setDisable(true);
+        this.lblMaxError.setText("Max=");
+        this.lblMinError.setText("Min=");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an bmp image");
 
@@ -367,7 +384,7 @@ public class AppController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            this.decoderUseCase.initDecoder(selectedFile);
+            this.decoderUseCase = new DecoderUseCase(selectedFile);
             this.changeInterfaceAfterLoadQuantizedErrorEvent();
         }
 
@@ -382,6 +399,10 @@ public class AppController implements Initializable {
         WritableImage writableImage = this.decoderUseCase.startDecoding();
         this.iwDecodedImage.setImage(writableImage);
 
+        this.isDecodedImage = true;
+        if (this.isOriginalImage) {
+            this.btnComputeError.setDisable(false);
+        }
         this.changeInterfaceAfterDecodeEvent();
 
 
@@ -414,12 +435,11 @@ public class AppController implements Initializable {
     /***
      * refresh error image
      *
-     * @throws IOException an exception
      */
     @FXML
-    protected void onBtnRefreshClick() throws IOException {
+    protected void onBtnRefreshClick() {
         String contrastString = this.tfContrast.getText();
-        double contrast = 0;
+        double contrast;
         if (!contrastString.equals("")) {
             try {
                 contrast = Double.parseDouble(contrastString);
@@ -449,7 +469,8 @@ public class AppController implements Initializable {
      */
     @FXML
     protected void onBtnComputeErrorClick() {
-        int[] minMaxValue = this.coderUseCase.computeError();
+        int[][] decodedValues = this.decoderUseCase.getDecodedValues();
+        int[] minMaxValue = this.coderUseCase.computeError(decodedValues);
 
         String message = "Min= " + minMaxValue[0];
         this.lblMinError.setText(message);
@@ -479,14 +500,14 @@ public class AppController implements Initializable {
      */
     private void changeInterfaceAfterLoadOriginalImageEvent() {
         //Disable
-        this.setDisableEncodeGroup(false);
+        this.setDisableEncodeGroup();
         this.setDisableCoderSaveGroup(true);
 
         this.cbError.getItems().clear();
         this.cbSaveMode.getItems().clear();
 
         this.cbPredictionSelection.getItems().clear();
-        this.cbPredictionSelection.getItems().addAll("128", "A", "B", "C", "A+B-C", "A+(B-C)/2", "(A+B-C)/2", "B+(A-C)/2", "(A+B)/2", "JPEGLS");
+        this.cbPredictionSelection.getItems().addAll("128", "A", "B", "C", "A+B-C", "A+(B-C)/2", "(A+B-C)/2", "B+(A-C)/2", "(A+B)/2", "JPEGS");
         this.cbPredictionSelection.setValue("128");
 
 
@@ -586,14 +607,12 @@ public class AppController implements Initializable {
 
     /**
      * set disable parameter of each item from encode group
-     *
-     * @param state the state that will be set
      */
-    private void setDisableEncodeGroup(boolean state) {
-        this.cbPredictionSelection.setDisable(state);
-        this.tfK.setDisable(state);
-        this.btnEncode.setDisable(state);
-        this.cbHistogramSource.setDisable(state);
+    private void setDisableEncodeGroup() {
+        this.cbPredictionSelection.setDisable(false);
+        this.tfK.setDisable(false);
+        this.btnEncode.setDisable(false);
+        this.cbHistogramSource.setDisable(false);
     }
 
 
@@ -608,7 +627,6 @@ public class AppController implements Initializable {
 
         this.btnSaveQuantizedError.setDisable(state);
         this.btnRefresh.setDisable(state);
-        this.btnComputeError.setDisable(state);
 
         this.tfContrast.setDisable(state);
 
