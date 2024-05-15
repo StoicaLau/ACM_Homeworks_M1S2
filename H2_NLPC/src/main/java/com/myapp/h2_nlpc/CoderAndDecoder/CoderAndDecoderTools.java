@@ -38,7 +38,7 @@ public class CoderAndDecoderTools {
      */
     public static int quantizeError(int error, int k) {
         double doubleResult = (double) (error + k) / (2 * k + 1);
-        return (int) doubleResult;
+        return (int) Math.floor(doubleResult);
     }
 
     /**

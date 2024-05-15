@@ -290,7 +290,7 @@ public class AppBackend {
         for (int i = 0; i < 512; i++) {
             double[] lineValues = this.waveletImageValue[i];
             double[] result = this.synthesizeValues(lineValues, length);
-            if (length >= 0) System.arraycopy(result, 0, this.waveletImageValue[i], 0, length);
+            System.arraycopy(result, 0, this.waveletImageValue[i], 0, length);
         }
     }
 

@@ -3,6 +3,7 @@ package arithmeticcoder.main;
 import arithmeticcoder.CodingDecoding.ArithmeticDecoding;
 import arithmeticcoder.bittools.BitReader;
 import arithmeticcoder.model.AdaptiveModel;
+import arithmeticcoder.model.AdaptiveModelConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +17,9 @@ public class MainDecoding {
         ArithmeticDecoding arithmeticDecoding = new ArithmeticDecoding(bitReader);
         while (true) {
             int symbol;
-            symbol = arithmeticDecoding.decodeSymbol(adaptiveModel.getSums());
+            symbol = arithmeticDecoding.decodeSymbol();
 //            System.out.println(symbol);
-            if (symbol == adaptiveModel.getEOF_SYMBOL())
+            if (symbol == AdaptiveModelConstants.EOF_SYMBOL)
                 break;
             int ch = symbol;
             System.out.print((char) ch);

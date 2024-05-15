@@ -1,6 +1,7 @@
 package arithmeticcoder.CodingDecoding;
 
 import arithmeticcoder.bittools.BitWriter;
+import arithmeticcoder.model.AdaptiveModel;
 
 import java.io.IOException;
 
@@ -30,19 +31,26 @@ public class ArithmeticEncoding {
     private BitWriter bitWriter;
 
     /**
+     * adaptive model
+     */
+    private AdaptiveModel adaptiveModel;
+
+    /**
      * it is start_encoding method
      */
     public ArithmeticEncoding(BitWriter bitWriter) {
+        this.adaptiveModel = new AdaptiveModel();
         this.bitWriter = bitWriter;
         low = 0;
         high = ArithmeticParameters.TOP_VALUE;
         bitsToFollow = 0;
     }
 
-    public void encodeSymbol(int symbol, int[] sums) throws IOException {
+    public void encodeSymbol(int symbol) throws IOException {
+        int[] sums = adaptiveModel.getSums();
         long range = high - low + 1;
         int noOfSymbols = sums.length - 1;
-       // System.out.println(symbol+":"+noOfSymbols);
+        // System.out.println(symbol+":"+noOfSymbols);
         high = low + (range * sums[symbol + 1]) / sums[noOfSymbols] - 1;
         low = low + (range * sums[symbol]) / sums[noOfSymbols];
 
@@ -63,6 +71,8 @@ public class ArithmeticEncoding {
             low = (low << 1) & ArithmeticParameters.MASK32B;
             high = ((high << 1) | 1) & ArithmeticParameters.MASK32B;
         }
+
+        adaptiveModel.updateModel(symbol);
     }
 
     /**

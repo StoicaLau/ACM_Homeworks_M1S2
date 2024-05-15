@@ -1,5 +1,6 @@
 package com.h3_fractal_image_coder.coderanddecoder;
 
+import com.h3_fractal_image_coder.AppParameters;
 import com.h3_fractal_image_coder.Block;
 import com.h3_fractal_image_coder.RangeDetails;
 import com.h3_fractal_image_coder.mytools.BitReader;
@@ -11,6 +12,7 @@ import java.io.IOException;
  * Decoder class
  */
 public class Decoder {
+
 
     /**
      * current values
@@ -75,15 +77,24 @@ public class Decoder {
      * decoding current values according to domains
      */
     public void decode() {
-        this.currentValues = new int[512][512];
+        int[][] newValues = new int[512][512];
 
         for (int i = 0; i < Tools.NUMBER_OF_RANGES; i++) {
             for (int j = 0; j < Tools.NUMBER_OF_RANGES; j++) {
                 int xDomain = this.rangeDetails[i][j].getXDomain();
                 int yDomain = this.rangeDetails[i][j].getYDomain();
                 int izo = this.rangeDetails[i][j].getIzoType();
-                int scale = this.rangeDetails[i][j].getScale();
-                int offset = this.rangeDetails[i][j].getOffset();
+
+                double scale = this.rangeDetails[i][j].getScale();
+                double offset = this.rangeDetails[i][j].getOffset();
+
+                scale = (double) scale / (double) (1 << AppParameters.S_BITS) * (2.0 * AppParameters.MAX_SCALE) - AppParameters.MAX_SCALE;
+                offset = offset / (double) ((1 << AppParameters.O_BITS) - 1) * ((1.0 + Math.abs(scale)) * AppParameters.GREY_LEVELS);
+
+                if (scale > 0.0) {
+                    offset -= scale * AppParameters.GREY_LEVELS;
+                }
+
                 Block isometricDomain = Tools.getIsometricDomainBlock(this.domains[yDomain][xDomain], izo);
                 int[][] domainValues = isometricDomain.getValues();
 
@@ -93,15 +104,25 @@ public class Decoder {
                     for (int xImage = xBegin; xImage < xBegin + Tools.BLOCK_SIZE; xImage++) {
                         int xBlock = xImage - xBegin;
                         int yBlock = yImage - yBegin;
-                        currentValues[yImage][xImage] = (int) ((double) scale * domainValues[yBlock][xBlock] + offset);
-                        currentValues[yImage][xImage] = Tools.normalizeValue(currentValues[yImage][xImage]);
-                        System.out.print(currentValues[yImage][xImage] + " ");
+
+                        newValues[yImage][xImage] = (int) ((scale * domainValues[yBlock][xBlock]) + offset);
+//                        newValues[yImage][xImage] = Tools.normalizeValue(newValues[yImage][xImage]);
+                        if (newValues[yImage][xImage] > 255) {
+                            System.out.println(scale);
+                            System.out.println(offset);
+                            System.out.println(newValues[yImage][xImage] + " ");
+                        }
                     }
-                    System.out.println();
+//                    System.out.println();
                 }
             }
         }
 
+        for (int i = 0; i < 512; i++) {
+            for (int j = 0; j < 512; j++) {
+                this.currentValues[i][j] = newValues[i][j];
+            }
+        }
         this.ranges = Tools.initializeRanges(this.currentValues);
         this.domains = Tools.initializeDomains(this.currentValues);
     }

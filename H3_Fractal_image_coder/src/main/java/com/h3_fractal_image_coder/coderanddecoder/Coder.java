@@ -1,5 +1,6 @@
 package com.h3_fractal_image_coder.coderanddecoder;
 
+import com.h3_fractal_image_coder.AppParameters;
 import com.h3_fractal_image_coder.Block;
 import com.h3_fractal_image_coder.IsometricDomains;
 import com.h3_fractal_image_coder.RangeDetails;
@@ -11,23 +12,6 @@ import org.javatuples.Triplet;
  */
 public class Coder {
 
-    /**
-     * number of bits for scale
-     */
-    private static final int S_BITS = 5;
-    /**
-     * number of bits for offset
-     */
-    private static final int O_BITS = 7;
-    /**
-     * maximum grey level
-     */
-    private static final int GREY_LEVELS = 255;
-
-    /**
-     * maximum allowed value for scale
-     */
-    private static final double MAX_SCALE = 1.0;
 
     /**
      * image values
@@ -175,35 +159,35 @@ public class Coder {
         double det = sum1 * domain.getSumSquared() - (domain.getSum() * domain.getSum());
         double alpha = det == 0.0 ? 0.0 : (sum1 * rdSum - range.getSum() * domain.getSum()) / det;
 
-        int scale = (int) (0.5 + (alpha + MAX_SCALE) / (2.0 * MAX_SCALE) * (1 << S_BITS));
+        int scale = (int) (0.5 + (alpha + AppParameters.MAX_SCALE) / (2.0 * AppParameters.MAX_SCALE) * (1 << AppParameters.S_BITS));
 
         //normalize
         if (scale < 0) {
             scale = 0;
         }
-        if (scale >= (1 << S_BITS)) {
-            scale = (1 << S_BITS) - 1;
+        if (scale >= (1 << AppParameters.S_BITS)) {
+            scale = (1 << AppParameters.S_BITS) - 1;
         }
 
-        alpha = (double) scale / (double) (1 << S_BITS) * (2.0 * MAX_SCALE) - MAX_SCALE;
+        alpha = (double) scale / (double) (1 << AppParameters.S_BITS) * (2.0 * AppParameters.MAX_SCALE) - AppParameters.MAX_SCALE;
         double beta = (range.getSum() - alpha * domain.getSum()) / sum1;
 
         if (alpha > 0.0) {
-            beta += alpha * GREY_LEVELS;
+            beta += alpha * AppParameters.GREY_LEVELS;
         }
 
         //TODO fabs?
-        int offset = (int) (0.5 + beta / ((1.0 + Math.abs(alpha)) * GREY_LEVELS) * ((1 << O_BITS) - 1));
+        int offset = (int) (0.5 + beta / ((1.0 + Math.abs(alpha)) * AppParameters.GREY_LEVELS) * ((1 << AppParameters.O_BITS) - 1));
         if (offset < 0) {
             offset = 0;
         }
-        if (offset >= (1 << O_BITS)) {
-            offset = (1 << O_BITS) - 1;
+        if (offset >= (1 << AppParameters.O_BITS)) {
+            offset = (1 << AppParameters.O_BITS) - 1;
         }
 
-        beta = (double) offset / (double) ((1 << O_BITS) - 1) * ((1.0 + Math.abs(alpha)) * GREY_LEVELS);
+        beta = (double) offset / (double) ((1 << AppParameters.O_BITS) - 1) * ((1.0 +Math.abs(alpha)) * AppParameters.GREY_LEVELS);
         if (alpha > 0.0) {
-            beta -= alpha * GREY_LEVELS;
+            beta -= alpha * AppParameters.GREY_LEVELS;
         }
 
         //TODO /sum1?
