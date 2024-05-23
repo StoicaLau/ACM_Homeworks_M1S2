@@ -106,7 +106,7 @@ public class Decoder {
                         int yBlock = yImage - yBegin;
 
                         newValues[yImage][xImage] = (int) ((scale * domainValues[yBlock][xBlock]) + offset);
-//                        newValues[yImage][xImage] = Tools.normalizeValue(newValues[yImage][xImage]);
+                        newValues[yImage][xImage] = Tools.normalizeValue(newValues[yImage][xImage]);
                         if (newValues[yImage][xImage] > 255) {
                             System.out.println(scale);
                             System.out.println(offset);

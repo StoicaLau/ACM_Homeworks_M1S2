@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
@@ -309,7 +311,8 @@ public class AppController implements Initializable {
                 message = "The original image is not loaded";
             else {
                 double psnr = this.decoderUseCase.computePSNR(this.coderUseCase.getOriginalImageValues());
-                message = "PSNR= " + psnr;
+                NumberFormat formatter = new DecimalFormat("#0.00000");
+                message = "PSNR= " + formatter.format(psnr);
             }
             this.lblPSNR.setText(message);
             this.btnSaveDecodedImage.setDisable(false);

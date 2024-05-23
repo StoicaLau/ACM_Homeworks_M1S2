@@ -115,12 +115,14 @@ public class DecoderUseCase {
                 if (originalImageValue[i][j] > dividend) {
                     dividend = originalImageValue[i][j];
                 }
-                divisor += (originalImageValue[i][j] - decodedValue[i][j]);
+                divisor = divisor + (originalImageValue[i][j] - decodedValue[i][j]) * (originalImageValue[i][j] - decodedValue[i][j]);
             }
         }
         dividend = dividend * dividend;
+        divisor = divisor / (512 * 512);
         double result = dividend / divisor;
-        return 10 * Math.log(result);
+
+        return 10 * Math.log10(result);
     }
 
     /**
