@@ -19,7 +19,7 @@ public class MainEncoding {
 
         file = new File("test.bin");
 
-        BitReader bitReader = new BitReader(file);
+        BitReader bitReader = new BitReader(file,false);
 
         while (true) {
 

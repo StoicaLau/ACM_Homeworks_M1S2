@@ -7,16 +7,15 @@ public class ArithmeticParameters {
     /**
      * code value bits
      */
-    public static final int CODE_VALUE_BITS = 16;
+    public static final int CODE_VALUE_BITS = 32;
 
     /**
-     * biggest value 2^16(code_value_bits
+     * biggest value 2^32(code_value_bits
      */
-    public static final long TOP_VALUE = (1L << CODE_VALUE_BITS) - 1;
+    public static final long TOP_VALUE = (1L <<CODE_VALUE_BITS) - 1;
     /**
      * first qtr ,first segment
      */
-
 
     public static final long FIRST_QTR = TOP_VALUE / 4 + 1;
     /**
@@ -32,4 +31,5 @@ public class ArithmeticParameters {
      * mask 32 bits
      */
     public static final long MASK32B = 0xFFFFFFFFL;
+
 }

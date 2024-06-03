@@ -38,7 +38,7 @@ public class Main {
 
         file = new File(INPUT_FILE);
 
-        BitReader bitReader = new BitReader(file);
+        BitReader bitReader = new BitReader(file,false);
 
         while (true) {
 
@@ -63,7 +63,7 @@ public class Main {
     public static void decoding() throws IOException {
         System.out.println("Start decoding");
         File file = new File(AUX_FILE);
-        BitReader bitReader = new BitReader(file);
+        BitReader bitReader = new BitReader(file,true);
         ArithmeticDecoding arithmeticDecoding = new ArithmeticDecoding(bitReader);
 
         file = new File(OUTPUT_FILE);

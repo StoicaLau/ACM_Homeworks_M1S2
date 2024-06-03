@@ -12,7 +12,7 @@ public class MainDecoding {
     public static void main(String[] args) throws IOException {
         File file = new File("test_output.bin");
 
-        BitReader bitReader = new BitReader(file);
+        BitReader bitReader = new BitReader(file,false);
         AdaptiveModel adaptiveModel = new AdaptiveModel();
         ArithmeticDecoding arithmeticDecoding = new ArithmeticDecoding(bitReader);
         while (true) {

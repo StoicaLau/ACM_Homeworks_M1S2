@@ -11,10 +11,12 @@ public class BitReader {
     private byte buff;
     private int count;
     private FileInputStream fis;
+    private boolean decoder;
 
-    public BitReader(File file) throws IOException {
+    public BitReader(File file,boolean decoder) throws IOException {
         this.count = 0;
         this.fis = new FileInputStream(file);
+        this.decoder=decoder;
     }
 
     public void close() throws IOException {
@@ -24,8 +26,11 @@ public class BitReader {
     public int readBit() throws IOException {
         if (count == 0) {
             int readByte = fis.read();
-            if (readByte == -1)
+            if (readByte == -1) {
+                if (decoder)
+                    return 0;
                 return -1;
+            }
             buff = (byte) readByte;
 
         }
@@ -40,6 +45,8 @@ public class BitReader {
         for (int i = nr - 1; i >= 0; i--) {
             int bit = this.readBit();
             if (bit == -1) {
+                if (decoder)
+                    return 0;
                 return -1;
             }
             value |= ((bit) << (nr - i - 1));
