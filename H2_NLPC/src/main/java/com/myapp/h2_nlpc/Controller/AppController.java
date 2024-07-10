@@ -507,7 +507,7 @@ public class AppController implements Initializable {
         this.cbSaveMode.getItems().clear();
 
         this.cbPredictionSelection.getItems().clear();
-        this.cbPredictionSelection.getItems().addAll("128", "A", "B", "C", "A+B-C", "A+(B-C)/2", "(A+B-C)/2", "B+(A-C)/2", "(A+B)/2", "JPEGS");
+        this.cbPredictionSelection.getItems().addAll("128", "A", "B", "C", "A+B-C", "A+(B-C)/2", "(A+B-C)/2", "B+(A-C)/2", "(A+B)/2", "JPEGLS");
         this.cbPredictionSelection.setValue("128");
 
 

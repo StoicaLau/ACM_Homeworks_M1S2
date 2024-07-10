@@ -12,14 +12,14 @@ import java.io.IOException;
 public class Main {
     public static final String INPUT_FILE_EXE = "P2_2_1_BNB_M5_V3_R1.exe";
     public static final String OUTPUT_FILE_EXE = "P2_2_1_BNB_M5_V3_R1_out.exe";
-    public static final String INPUT_FILE_BIN = "test.bin";
-    public static final String OUTPUT_FILE_BIN = "test_output.bin";
+    public static final String INPUT_FILE_BIN = "input.bin";
+    public static final String OUTPUT_FILE_BIN = "output.bin";
     public static String PATH = "C:\\Users\\stoic\\Desktop\\master\\Sem2\\ACM\\Laburi\\ACM_Homeworks_M1S2\\H1_Arithmetic_coder\\out";
-    public static final String INPUT_FILE = PATH + "\\" + INPUT_FILE_EXE;
+    public static final String INPUT_FILE = PATH + "\\" + INPUT_FILE_BIN;
 
-    public static final String AUX_FILE = PATH + "\\" + "test_aux.bin";
+    public static final String AUX_FILE = PATH + "\\" + "aux_file.bin";
 
-    public static final String OUTPUT_FILE = PATH + "\\" + OUTPUT_FILE_EXE;
+    public static final String OUTPUT_FILE = PATH + "\\" + OUTPUT_FILE_BIN;
 
 
     public static void main(String[] args) throws IOException {
